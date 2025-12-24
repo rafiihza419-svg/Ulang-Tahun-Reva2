@@ -125,13 +125,14 @@ body {
 
 /* Menu Orbit */
 #menu-orbit {
+    transform-style: preserve-3d;
+    perspective: 800px;
     position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     width: 300px;
     height: 300px;
-    animation: rotate 20s linear infinite;
 }
 
 .menu-item {
