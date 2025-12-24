@@ -2,289 +2,138 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<title>Happy Birthday ❤️</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy Birthday 💖</title>
 
 <style>
-*{box-sizing:border-box}
-
-body{
-  margin:0;
-  font-family:'Segoe UI',sans-serif;
-  height:100vh;
-  overflow:hidden;
-  background:linear-gradient(120deg,#ff6fae,#ff9ad5,#ffd1ea);
-  background-size:400% 400%;
-  animation:bgMove 12s ease infinite;
+html, body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: radial-gradient(circle at top, #ffd1e8, #ff7abf);
+  font-family: 'Poppins', sans-serif;
 }
 
-@keyframes bgMove{
-  0%{background-position:0% 50%}
-  50%{background-position:100% 50%}
-  100%{background-position:0% 50%}
+/* SCENE */
+.scene {
+  width: 100%;
+  height: 100%;
+  perspective: 1200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-/* ===== START SCREEN ===== */
-#start{
-  position:fixed;
-  inset:0;
-  background:black;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  z-index:10;
+/* SPHERE */
+.sphere {
+  position: relative;
+  width: 420px;
+  height: 420px;
+  transform-style: preserve-3d;
+  animation: spin 20s linear infinite;
 }
 
-#heartLogo{
-  font-size:90px;
-  cursor:pointer;
-  animation:pulse 1.5s infinite;
+/* BUTTON ORBIT */
+.orbit-item {
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  background: linear-gradient(145deg, #ff5fa2, #ff2f92);
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+  box-shadow: 0 0 25px rgba(255, 80, 160, 0.8);
+  cursor: pointer;
+  transition: transform 0.3s, box-shadow 0.3s;
 }
 
-@keyframes pulse{
-  0%,100%{transform:scale(1)}
-  50%{transform:scale(1.2)}
+.orbit-item:hover {
+  box-shadow: 0 0 40px rgba(255, 120, 200, 1);
 }
 
-/* ===== MAIN ===== */
-#main{
-  display:none;
-  height:100vh;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  animation:fadeZoom 1.2s ease forwards;
+/* FLOWER */
+.flower {
+  position: absolute;
+  font-size: 28px;
+  animation: float 6s ease-in-out infinite;
 }
 
-@keyframes fadeZoom{
-  from{opacity:0; transform:scale(.8)}
-  to{opacity:1; transform:scale(1)}
+/* ANIMATIONS */
+@keyframes spin {
+  from { transform: rotateX(0deg) rotateY(0deg); }
+  to   { transform: rotateX(360deg) rotateY(360deg); }
 }
 
-/* ===== 3D ORBIT ===== */
-.scene{
-  width:320px;
-  height:320px;
-  perspective:1000px;
-}
-
-.orbit{
-  width:100%;
-  height:100%;
-  position:relative;
-  transform-style:preserve-3d;
-  transition:transform .4s;
-}
-
-.item{
-  position:absolute;
-  top:50%;
-  left:50%;
-  width:80px;
-  height:80px;
-  margin:-40px;
-  background:#ff5fa2;
-  color:white;
-  border-radius:50%;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
-  cursor:pointer;
-  box-shadow:0 15px 35px rgba(0,0,0,.35);
-  user-select:none;
-}
-
-.item span{
-  font-size:12px;
-  margin-top:4px;
-}
-
-/* ===== CARD ===== */
-.card{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.6);
-  display:none;
-  justify-content:center;
-  align-items:center;
-  z-index:5;
-}
-
-.cardBox{
-  background:white;
-  width:340px;
-  padding:25px;
-  border-radius:25px;
-  text-align:center;
-}
-
-/* ===== GLOW ===== */
-.glow{
-  position:fixed;
-  width:20px;
-  height:20px;
-  border-radius:50%;
-  background:radial-gradient(circle,#ff9ad5,transparent 70%);
-  animation:glow .8s ease-out forwards;
-  pointer-events:none;
-}
-
-@keyframes glow{
-  to{transform:scale(6);opacity:0}
-}
-
-/* ===== GALLERY ===== */
-.gallery{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:8px;
-}
-.gallery img{
-  width:100%;
-  height:90px;
-  object-fit:cover;
-  border-radius:10px;
-}
-
-/* ===== FLOWER ===== */
-.flower{
-  position:fixed;
-  bottom:0;
-  font-size:28px;
-  animation:grow 1s ease forwards;
-}
-@keyframes grow{
-  from{transform:scale(0)}
-  to{transform:scale(1)}
+@keyframes float {
+  0%,100% { transform: translateY(0); }
+  50% { transform: translateY(-20px); }
 }
 </style>
 </head>
 
-<body onclick="glow(event)">
+<body>
 
-<!-- START -->
-<div id="start">
-  <div id="heartLogo" onclick="openSite()">💗</div>
-</div>
+<div class="scene">
+  <div class="sphere" id="sphere">
 
-<!-- MAIN ORBIT -->
-<div id="main">
-  <div class="scene">
-    <div class="orbit" id="orbit">
-      <div class="item" onclick="openMenu('letter')">💌<span>Surat</span></div>
-      <div class="item" onclick="openMenu('gallery')">🖼<span>Foto</span></div>
-      <div class="item" onclick="openMenu('video')">🎥<span>Video</span></div>
-      <div class="item" onclick="openMenu('gift')">🎁<span>Hadiah</span></div>
-      <div class="item" onclick="openMenu('creator')">💖<span>Untukmu</span></div>
+    <!-- MENU -->
+    <div class="orbit-item" style="transform: rotateY(0deg) translateZ(220px);">
+      🎁<br>Hadiah
     </div>
+
+    <div class="orbit-item" style="transform: rotateY(72deg) translateZ(220px);">
+      💌<br>Pesan
+    </div>
+
+    <div class="orbit-item" style="transform: rotateY(144deg) translateZ(220px);">
+      📸<br>Kenangan
+    </div>
+
+    <div class="orbit-item" style="transform: rotateY(216deg) translateZ(220px);">
+      ❤️<br>Untukmu
+    </div>
+
+    <div class="orbit-item" style="transform: rotateY(288deg) translateZ(220px);">
+      🌸<br>Bunga
+    </div>
+
+    <!-- FLOWERS -->
+    <div class="flower" style="transform: rotateY(30deg) translateZ(300px);">🌸</div>
+    <div class="flower" style="transform: rotateY(120deg) translateZ(280px);">🌷</div>
+    <div class="flower" style="transform: rotateY(210deg) translateZ(320px);">🌹</div>
+    <div class="flower" style="transform: rotateY(300deg) translateZ(290px);">💐</div>
+
   </div>
 </div>
 
-<!-- CARD -->
-<div class="card" id="card">
-  <div class="cardBox" id="cardBox"></div>
-</div>
-
 <script>
-/* OPEN */
-function openSite(){
-  start.style.display="none";
-  main.style.display="flex";
-}
+const sphere = document.getElementById('sphere');
+let isDragging = false;
+let startX, startY;
+let rotX = 0, rotY = 0;
 
-/* GLOW */
-function glow(e){
-  let g=document.createElement("div");
-  g.className="glow";
-  g.style.left=e.clientX+"px";
-  g.style.top=e.clientY+"px";
-  document.body.appendChild(g);
-  setTimeout(()=>g.remove(),800);
-}
-
-/* ORBIT POSITION */
-const items=document.querySelectorAll('.item');
-const total=items.length;
-const radius=140;
-
-items.forEach((item,i)=>{
-  const angle=(360/total)*i;
-  item.style.transform=`rotateY(${angle}deg) translateZ(${radius}px)`;
+document.addEventListener('mousedown', e => {
+  isDragging = true;
+  startX = e.clientX;
+  startY = e.clientY;
 });
 
-/* DRAG ROTATE */
-let rotY=0,startX;
-orbit.onmousedown=e=>{
-  startX=e.clientX;
-  document.onmousemove=ev=>{
-    rotY+=(ev.clientX-startX)*0.3;
-    orbit.style.transform=`rotateY(${rotY}deg)`;
-    startX=ev.clientX;
-  }
-  document.onmouseup=()=>document.onmousemove=null;
-};
+document.addEventListener('mousemove', e => {
+  if (!isDragging) return;
+  rotY += (e.clientX - startX) * 0.3;
+  rotX -= (e.clientY - startY) * 0.3;
+  sphere.style.transform = `rotateX(${rotX}deg) rotateY(${rotY}deg)`;
+  startX = e.clientX;
+  startY = e.clientY;
+});
 
-/* MENU */
-function openMenu(type){
-  card.style.display="flex";
-  if(type==="letter"){
-    cardBox.innerHTML=`
-      <h2>💌 Surat</h2>
-      <p style="text-align:left">
-      Dari awal perjalanan kecil itu, aku tidak pernah
-      menyangka akan sejauh ini. Terima kasih sudah
-      hadir dan membuat hidupku lebih hangat 🤍
-      </p>
-      <button onclick="closeCard()">Tutup</button>`;
-  }
-
-  if(type==="gallery"){
-    cardBox.innerHTML=`
-      <h2>🖼 Foto</h2>
-      <div class="gallery">
-        <img src="foto1.jpg">
-        <img src="foto2.jpg">
-        <img src="foto3.jpg">
-        <img src="foto4.jpg">
-        <img src="foto5.jpg">
-        <img src="foto6.jpg">
-      </div>
-      <button onclick="closeCard()">Tutup</button>`;
-  }
-
-  if(type==="video"){
-    cardBox.innerHTML=`
-      <h2>🎥 Video</h2>
-      <video controls width="100%">
-        <source src="video.mp4" type="video/mp4">
-      </video>
-      <button onclick="closeCard()">Tutup</button>`;
-  }
-
-  if(type==="gift"){
-    let f=document.createElement("div");
-    f.className="flower";
-    f.innerHTML="🌸";
-    f.style.left=Math.random()*100+"vw";
-    document.body.appendChild(f);
-    setTimeout(()=>f.remove(),2000);
-  }
-
-  if(type==="creator"){
-    cardBox.innerHTML=`
-      <h2>💖 Untuk Kamu</h2>
-      <p style="text-align:left">
-      Terima kasih sudah membuat semua ini untuk aku.
-      Setiap detailnya terasa penuh perhatian.
-      Aku merasa sangat dicintai 🤍
-      </p>
-      <button onclick="closeCard()">Tutup</button>`;
-  }
-}
-
-function closeCard(){
-  card.style.display="none";
-}
+document.addEventListener('mouseup', () => isDragging = false);
 </script>
 
 </body>
