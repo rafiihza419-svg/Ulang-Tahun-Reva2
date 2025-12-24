@@ -104,6 +104,18 @@ setInterval(()=>{
         });
     });
 
+    const radius = 140;
+menuItems.forEach((item, i)=>{
+    const phi = Math.acos(-1 + (2*i)/menuItems.length);
+    const theta = Math.sqrt(menuItems.length*Math.PI)*phi;
+
+    const x = radius * Math.cos(theta) * Math.sin(phi);
+    const y = radius * Math.sin(theta) * Math.sin(phi);
+    const z = radius * Math.cos(phi);
+
+    item.style.transform = `translate3d(${x}px, ${y}px, ${z}px)`;
+});
+
     // Load Content (Lazy Load)
     function loadContent(menu) {
         content.innerHTML = '<div class="fade-in">Loading...</div>';
@@ -237,4 +249,24 @@ window.addEventListener('mousemove',e=>{
         `translate(-50%,-50%) rotateX(${rotX}deg) rotateY(${rotY}deg)`;
     lastX=e.clientX;
     lastY=e.clientY;
+});
+
+let dragging=false, lx=0, ly=0, rx=0, ry=0;
+
+menuOrbit.addEventListener('mousedown',e=>{
+    dragging=true;
+    lx=e.clientX;
+    ly=e.clientY;
+});
+
+window.addEventListener('mouseup',()=>dragging=false);
+
+window.addEventListener('mousemove',e=>{
+    if(!dragging) return;
+    ry += (e.clientX-lx)*0.3;
+    rx -= (e.clientY-ly)*0.3;
+    menuOrbit.style.transform =
+      `translate(-50%,-50%) rotateX(${rx}deg) rotateY(${ry}deg)`;
+    lx=e.clientX;
+    ly=e.clientY;
 });
