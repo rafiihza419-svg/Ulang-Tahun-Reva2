@@ -108,3 +108,15 @@ function back(){
 }
 
 });
+
+['click','touchstart'].forEach(evt=>{
+  heartLogo.addEventListener(evt, ()=>{
+    openingOverlay.style.opacity = '0';
+    openingOverlay.style.pointerEvents = 'none';
+
+    setTimeout(()=>{
+      openingOverlay.style.display = 'none';
+      menuOrbit.classList.remove('hidden');
+    },1000);
+  }, { once:true });
+});
