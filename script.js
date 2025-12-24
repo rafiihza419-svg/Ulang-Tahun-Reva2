@@ -116,3 +116,25 @@ style.innerHTML=`
   to{transform:translateY(110vh) rotate(360deg);opacity:0}
 }`;
 document.head.appendChild(style);
+
+function startFlowers(){
+  setInterval(()=>{
+    const f=document.createElement("div");
+    f.className="falling-flower";
+    f.innerHTML=["🌸","🌷","💮"][Math.floor(Math.random()*3)];
+    f.style.left=Math.random()*100+"vw";
+    f.style.animationDuration=(4+Math.random()*4)+"s";
+    document.body.appendChild(f);
+    setTimeout(()=>f.remove(),8000);
+  },500);
+}
+
+setInterval(()=>{
+  const h=document.createElement("div");
+  h.className="heart-particle";
+  h.innerHTML="💗";
+  h.style.left=Math.random()*100+"vw";
+  h.style.animationDuration=(6+Math.random()*4)+"s";
+  document.body.appendChild(h);
+  setTimeout(()=>h.remove(),10000);
+},700);
