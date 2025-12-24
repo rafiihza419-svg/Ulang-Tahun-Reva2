@@ -1,272 +1,189 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const openingOverlay = document.getElementById('opening-overlay');
-    const heartLogo = document.getElementById('heart-logo');
-    const particles = document.getElementById('particles');
-    const petals = document.getElementById('petals');
-    const ambientMusic = document.getElementById('ambient-music');
-    const bgMusic = document.getElementById('bg-music');
-    const menuOrbit = document.getElementById('menu-orbit');
-    const content = document.getElementById('content');
-    const welcomeText = document.getElementById('welcome-text');
-    const tooltip = document.getElementById('tooltip');
-    const menuItems = document.querySelectorAll('.menu-item');
-    const progressFill = document.getElementById('progress-fill');
-    const progressText = document.getElementById('progress-text');
-    let progress = 0;
-    let heartPressTime = 0;
-    let cornerClicks = 0;
-    let isOpened = false; // Flag biar gak double-click
 
-    // Generate Partikel (Debu/Bintang)
-    for (let i = 0; i < 50; i++) {
-        const particle = document.createElement('div');
-        particle.className = 'particle';
-        particle.style.left = Math.random() * 100 + '%';
-        particle.style.animationDelay = Math.random() * 5 + 's';
-        particles.appendChild(particle);
-    }
+  /* ========================
+     ELEMENTS
+  ======================== */
+  const openingOverlay = document.getElementById('opening-overlay');
+  const heartLogo = document.getElementById('heart-logo');
+  const particles = document.getElementById('particles');
+  const petals = document.getElementById('petals');
+  const ambientMusic = document.getElementById('ambient-music');
+  const bgMusic = document.getElementById('bg-music');
+  const menuOrbit = document.getElementById('menu-orbit');
+  const content = document.getElementById('content');
+  const welcomeText = document.getElementById('welcome-text');
+  const tooltip = document.getElementById('tooltip');
+  const menuItems = document.querySelectorAll('.menu-item');
 
-    // Heart background particles
-setInterval(()=>{
+  let opened = false;
+
+  /* ========================
+     PARTICLES (BINTANG)
+  ======================== */
+  for (let i = 0; i < 60; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.left = Math.random() * 100 + '%';
+    p.style.animationDelay = Math.random() * 5 + 's';
+    particles.appendChild(p);
+  }
+
+  /* ========================
+     HEART BACKGROUND PARTICLES
+  ======================== */
+  setInterval(() => {
     const h = document.createElement('div');
     h.className = 'heart-particle';
     h.innerHTML = '💜';
-    h.style.left = Math.random()*100 + 'vw';
-    h.style.animationDuration = (6+Math.random()*6)+'s';
+    h.style.left = Math.random() * 100 + 'vw';
+    h.style.animationDuration = (6 + Math.random() * 6) + 's';
     document.body.appendChild(h);
-    setTimeout(()=>h.remove(),12000);
-},800);
+    setTimeout(() => h.remove(), 12000);
+  }, 900);
 
-    // Play Ambient Music (dari awal)
-    ambientMusic.volume = 0.3;
-    ambientMusic.play().catch(() => {});
+  /* ========================
+     OPENING MUSIC
+  ======================== */
+  ambientMusic.volume = 0.3;
+  ambientMusic.play().catch(() => {});
 
-    // Klik Heart Logo (Diperbaiki: Langsung responsif)
-['click', 'touchstart'].forEach(evt => {
+  /* ========================
+     HEART CLICK (OPEN WORLD)
+  ======================== */
+  ['click', 'touchstart'].forEach(evt => {
     heartLogo.addEventListener(evt, () => {
-        heartLogo.style.animation = 'explode 0.5s ease-out';
+      if (opened) return;
+      opened = true;
+
+      heartLogo.style.animation = 'explode 0.6s ease-out';
+
+      setTimeout(() => {
+        openingOverlay.style.opacity = '0';
+        openingOverlay.style.pointerEvents = 'none';
+
+        document.body.classList.add('opened');
+        ambientMusic.pause();
+        bgMusic.play().catch(()=>{});
+
+        for (let i = 0; i < 25; i++) {
+          const petal = document.createElement('div');
+          petal.className = 'petal';
+          petal.style.left = Math.random() * 100 + '%';
+          petal.style.animationDelay = Math.random() * 5 + 's';
+          petals.appendChild(petal);
+        }
 
         setTimeout(() => {
-            openingOverlay.style.opacity = '0';
-            openingOverlay.style.pointerEvents = 'none';
+          openingOverlay.style.display = 'none';
+          menuOrbit.classList.remove('hidden');
+          content.classList.remove('hidden');
+          welcomeText.classList.remove('hidden');
+          tooltip.classList.add('show');
+        }, 1800);
+      }, 500);
+    }, { once:true });
+  });
 
-            document.body.classList.add('opened');
-            ambientMusic.pause();
-            bgMusic.play().catch(()=>{});
-
-            for (let i = 0; i < 20; i++) {
-                const petal = document.createElement('div');
-                petal.className = 'petal';
-                petal.style.left = Math.random() * 100 + '%';
-                petal.style.animationDelay = Math.random() * 5 + 's';
-                petals.appendChild(petal);
-            }
-
-            setTimeout(() => {
-                openingOverlay.style.display = 'none';
-                menuOrbit.classList.remove('hidden');
-                content.classList.remove('hidden');
-                welcomeText.classList.remove('hidden');
-                tooltip.classList.add('show');
-            }, 2000);
-        }, 500);
-    }, { once: true });
-});
-
-
-    // CSS untuk explode (inline)
-    const style = document.createElement('style');
-    style.textContent = `
-        @keyframes explode {
-            0% { transform: scale(1); opacity: 1; }
-            100% { transform: scale(2); opacity: 0; }
-        }
-    `;
-    document.head.appendChild(style);
-
-    // Menu Interaction (Teaser: Locked menu alert, unlock setelah progress 50%)
-    menuItems.forEach(item => {
-        item.addEventListener('click', () => {
-            if (item.classList.contains('locked')) {
-                if (progress >= 50) {
-                    item.classList.remove('locked'); // Unlock otomatis
-                    alert('Menu terbuka! 🎉');
-                } else {
-                    alert('Menu ini terkunci! Jelajahi yang lain dulu untuk unlock. 🔒');
-                    return;
-                }
-            }
-            menuItems.forEach(i => i.classList.remove('active'));
-            item.classList.add('active');
-            loadContent(item.dataset.menu);
-            updateProgress();
-            updateBackground();
-        });
-    });
-
-    const radius = 140;
-menuItems.forEach((item, i)=>{
-    const phi = Math.acos(-1 + (2*i)/menuItems.length);
-    const theta = Math.sqrt(menuItems.length*Math.PI)*phi;
+  /* ========================
+     3D SPHERE MENU POSITION
+  ======================== */
+  const radius = 140;
+  menuItems.forEach((item, i) => {
+    const phi = Math.acos(-1 + (2 * i) / menuItems.length);
+    const theta = Math.sqrt(menuItems.length * Math.PI) * phi;
 
     const x = radius * Math.cos(theta) * Math.sin(phi);
     const y = radius * Math.sin(theta) * Math.sin(phi);
     const z = radius * Math.cos(phi);
 
-    item.style.transform = `translate3d(${x}px, ${y}px, ${z}px)`;
-});
+    item.style.transform = `translate3d(${x}px,${y}px,${z}px)`;
+  });
 
-    // Load Content (Lazy Load)
-    function loadContent(menu) {
-        content.innerHTML = '<div class="fade-in">Loading...</div>';
-        setTimeout(() => {
-            let html = '';
-            switch(menu) {
-                case 'surat':
-                    html = `<h2>💌 Surat</h2><p>Pesan cinta dari aku: [Tulis pesanmu di sini]</p>`;
-                    break;
-                case 'galeri':
-                    html = `<h2>📷 Galeri</h2><img src="assets/photo1.jpg" alt="Kenangan"><img src="assets/photo2.jpg" alt="Kenangan">`;
-                    break;
-                case 'hadiah':
-                    html = `<h2>🎁 Hadiah Kecil</h2><p>Klik untuk download hadiah virtual: <a href="assets/gift.pdf">Download</a></p>`;
-                    break;
-                case 'video':
-                    html = `<h2>🎥 Video</h2><video controls><source src="assets/video.mp4" type="video/mp4"></video>`;
-                    break;
-                case 'bunga':
-                    html = `<h2>🌸 Bunga</h2><p>Bunga virtual untukmu: 🌹🌷🌻</p>`;
-                    break;
-                case 'timeline':
-                    html = `<h2>🕰 Timeline</h2><div class="timeline"><p>Pertemuan pertama: [Tanggal]</p><p>Momen lucu: [Deskripsi]</p><p>Hari spesial: [Tanggal]</p></div>`;
-                    break;
-                case 'lagu':
-                    html = `<h2>🎶 Lagu Kita</h2><button onclick="toggleMusic()">Play/Pause</button><p>Background berubah warna saat play!</p>`;
-                    break;
-                case 'secret':
-                    const password = prompt('Masukkan password (misal: tanggaljadian):');
-                    if (password === 'tanggaljadian') { // Ganti password
-                        html = `<h2>🔐 Secret</h2><p>Pesan rahasia: Aku sayang kamu selamanya.</p><img src="assets/secret.jpg"><p>Janji kecil: Aku akan selalu ada untukmu.</p>`;
-                    } else {
-                        html = '<p>Password salah! Coba lagi.</p>';
-                    }
-                    break;
-                case 'about':
-                    html = `<h2>🧠 About Us</h2><div class="card" onclick="flipCard(this)"><p>Fun fact: Kita pertama ketemu jam 5 sore.</p><p>Hal random yang kamu suka: [Isi]</p></div>`;
-                    break;
-                case 'surprise':
-                    html = `<h2>✨ Surprise</h2><button onclick="randomSurprise()">Klik untuk Surprise!</button>`;
-                    break;
-                default:
-                    html = '<p>Konten belum tersedia.</p>';
-            }
-            content.innerHTML = `<div class="fade-in">${html}</div>`;
-        }, 500); // Delay simulasi lazy load
-    }
+  /* ========================
+     MANUAL ROTATE (DRAG)
+  ======================== */
+  let dragging = false;
+  let lastX = 0, lastY = 0;
+  let rotX = 0, rotY = 0;
 
-    // Toggle Musik
-    window.toggleMusic = () => {
-        if (bgMusic.paused) {
-            bgMusic.play();
-            document.body.style.background = 'linear-gradient(45deg, #ffecd2, #fcb69f)'; // Warna sesuai lagu
-        } else {
-            bgMusic.pause();
-            document.body.style.background = 'linear-gradient(45deg, #ff9a9e, #fecfef)';
-        }
-    };
+  menuOrbit.addEventListener('mousedown', e => {
+    dragging = true;
+    lastX = e.clientX;
+    lastY = e.clientY;
+  });
 
-    // Flip Card for About Us
-    window.flipCard = (card) => {
-        card.style.transform = card.style.transform === 'rotateY(180deg)' ? 'rotateY(0deg)' : 'rotateY(180deg)';
-    };
+  window.addEventListener('mouseup', () => dragging = false);
 
-    // Random Surprise
-    window.randomSurprise = () => {
-        const surprises = [
-            () => alert('Quote: Kamu adalah alasan aku tersenyum setiap hari!'),
-            () => { document.body.innerHTML += '<div style="position:fixed;top:0;left:0;width:100%;height:100%;background:red;z-index:999;">Hati Hujan! 💖</div>'; setTimeout(() => location.reload(), 3000); }, // Simulasi hati hujan
-            () => { alert('Mini Game: Klik hati sebanyak mungkin!'); let score = 0; document.addEventListener('click', () => score++, {once: true}); setTimeout(() => alert(`Score: ${score}`), 5000); }
-        ];
-        surprises[Math.floor(Math.random() * surprises.length)]();
-    };
+  window.addEventListener('mousemove', e => {
+    if (!dragging) return;
+    rotY += (e.clientX - lastX) * 0.3;
+    rotX -= (e.clientY - lastY) * 0.3;
+    menuOrbit.style.transform =
+      `translate(-50%,-50%) rotateX(${rotX}deg) rotateY(${rotY}deg)`;
+    lastX = e.clientX;
+    lastY = e.clientY;
+  });
 
-    // Update Progress
-    function updateProgress() {
-        progress = Math.min(progress + 10, 100);
-        progressFill.style.width = `${progress}%`;
-        progressText.textContent = `Explore: ${progress}%`;
-    }
+  /* ========================
+     FULLSCREEN SECTION
+  ======================== */
+  const section = document.getElementById('section');
+  const sectionContent = document.getElementById('section-content');
+  const backBtn = document.getElementById('backBtn');
 
-    // Update Background Halus
-    function updateBackground() {
-        const colors = ['#ff9a9e', '#fecfef', '#a8edea', '#fed6e3', '#ffecd2'];
-        document.body.style.background = `linear-gradient(45deg, ${colors[progress % colors.length]}, ${colors[(progress + 1) % colors.length]})`;
-    }
+  menuItems.forEach(item => {
+    item.addEventListener('click', () => {
+      if (item.classList.contains('locked')) return;
 
-    // Easter Egg: Klik menu 3x untuk unlock hidden
-    let menuClicks = 0;
-    menuItems.forEach(item => {
-        item.addEventListener('click', () => {
-            menuClicks++;
-            if (menuClicks >= 30) { // 3x per menu x 10 menu
-                showHiddenMessage();
-                menuClicks = 0;
-            }
-        });
+      menuOrbit.style.display = 'none';
+      section.classList.remove('hidden');
+
+      switch (item.dataset.menu) {
+        case 'surat':
+          sectionContent.innerHTML = `<h1>💌 Surat</h1><p>Ini surat cinta untukmu…</p>`;
+          break;
+        case 'galeri':
+          sectionContent.innerHTML = `<h1>📷 Galeri</h1><p>Foto kenangan kita</p>`;
+          break;
+        case 'hadiah':
+          sectionContent.innerHTML = `<h1>🎁 Hadiah</h1><p>Kejutan kecil buat kamu</p>`;
+          break;
+        case 'surprise':
+          startFireworks();
+          break;
+        default:
+          sectionContent.innerHTML = `<h1>✨ Menu</h1><p>Konten segera hadir</p>`;
+      }
     });
+  });
 
-    // Hidden Message (untuk easter egg)
-    function showHiddenMessage() {
-        const hiddenMsg = document.getElementById('hidden-message');
-        hiddenMsg.classList.add('show');
-        bgMusic.pause();
-        document.body.style.background = 'linear-gradient(45deg, #a8edea, #fed6e3)';
-        setTimeout(() => {
-            hiddenMsg.classList.remove('show');
-            bgMusic.play();
-            document.body.style.background = 'linear-gradient(45deg, #ff9a9e, #fecfef)';
-        }, 5000);
+  backBtn.onclick = () => {
+    section.classList.add('hidden');
+    menuOrbit.style.display = 'block';
+  };
+
+  /* ========================
+     FIREWORK ENDING
+  ======================== */
+  function startFireworks() {
+    sectionContent.innerHTML = '';
+
+    for (let i = 0; i < 40; i++) {
+      const f = document.createElement('div');
+      f.className = 'firework';
+      f.innerHTML = '🎆';
+      f.style.left = Math.random() * 100 + 'vw';
+      f.style.top = Math.random() * 100 + 'vh';
+      document.body.appendChild(f);
+      setTimeout(() => f.remove(), 2000);
     }
-});
 
-let isDragging=false;
-let lastX=0,lastY=0;
-let rotX=0, rotY=0;
+    setTimeout(() => {
+      const t = document.createElement('div');
+      t.id = 'birthdayText';
+      t.innerHTML = '🎉 HAPPY BIRTHDAY 🎉';
+      document.body.appendChild(t);
+    }, 2000);
+  }
 
-menuOrbit.addEventListener('mousedown',e=>{
-    isDragging=true;
-    lastX=e.clientX;
-    lastY=e.clientY;
-});
-
-window.addEventListener('mouseup',()=>isDragging=false);
-
-window.addEventListener('mousemove',e=>{
-    if(!isDragging) return;
-    rotY += (e.clientX-lastX)*0.3;
-    rotX -= (e.clientY-lastY)*0.3;
-    menuOrbit.style.transform =
-        `translate(-50%,-50%) rotateX(${rotX}deg) rotateY(${rotY}deg)`;
-    lastX=e.clientX;
-    lastY=e.clientY;
-});
-
-let dragging=false, lx=0, ly=0, rx=0, ry=0;
-
-menuOrbit.addEventListener('mousedown',e=>{
-    dragging=true;
-    lx=e.clientX;
-    ly=e.clientY;
-});
-
-window.addEventListener('mouseup',()=>dragging=false);
-
-window.addEventListener('mousemove',e=>{
-    if(!dragging) return;
-    ry += (e.clientX-lx)*0.3;
-    rx -= (e.clientY-ly)*0.3;
-    menuOrbit.style.transform =
-      `translate(-50%,-50%) rotateX(${rx}deg) rotateY(${ry}deg)`;
-    lx=e.clientX;
-    ly=e.clientY;
 });
