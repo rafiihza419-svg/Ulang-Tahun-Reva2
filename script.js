@@ -1,171 +1,134 @@
+/* ---------- OPENING ---------- */
 const opening = document.getElementById("opening");
 const heart = document.getElementById("heart");
-const sceneContainer = document.getElementById("scene-container");
+const menuContainer = document.getElementById("menu-container");
 const content = document.getElementById("content");
 const contentInner = document.getElementById("content-inner");
 const backBtn = document.getElementById("back");
 
-let scene, camera, renderer, controls;
-
-/* OPENING */
+/* HEART CLICK FIX */
 ['click','touchstart'].forEach(evt=>{
-  heart.addEventListener(evt, (e)=>{
+  heart.addEventListener(evt, e=>{
     e.preventDefault();
-    e.stopPropagation();
-
-    opening.style.opacity = "0";
-    opening.style.pointerEvents = "none";
-
-    setTimeout(()=>{
-      opening.style.display = "none";
-      sceneContainer.classList.remove("hidden");
-      init3D();
-    },500);
-  }, { once:true });
+    opening.style.display="none";
+    menuContainer.classList.remove("hidden");
+    init3DMenu();
+  }, {once:true});
 });
 
-/* INIT THREE */
-function init3D(){
-  scene = new THREE.Scene();
+/* ---------- PARTICLES ---------- */
+setInterval(()=>{
+  const s=document.createElement("span");
+  s.innerHTML="💜";
+  s.style.left=Math.random()*100+"vw";
+  s.style.fontSize=(12+Math.random()*20)+"px";
+  s.style.animationDuration=(6+Math.random()*6)+"s";
+  document.getElementById("bg-particles").appendChild(s);
+  setTimeout(()=>s.remove(),12000);
+},600);
 
-  camera = new THREE.PerspectiveCamera(
-    60,
-    window.innerWidth/window.innerHeight,
-    0.1,
-    1000
-  );
-  camera.position.z = 5;
+/* ---------- THREE.JS MENU ---------- */
+let scene,camera,renderer,group;
+let isDrag=false,lastX=0,lastY=0,rotX=0,rotY=0;
 
-  renderer = new THREE.WebGLRenderer({alpha:true, antialias:true});
-  renderer.setSize(window.innerWidth, window.innerHeight);
-  sceneContainer.appendChild(renderer.domElement);
+function init3DMenu(){
+  scene=new THREE.Scene();
 
-  controls = new THREE.OrbitControls(camera, renderer.domElement);
-  controls.enableZoom = false;
-  controls.enablePan = false;
-  controls.autoRotate = false;
+  camera=new THREE.PerspectiveCamera(70,innerWidth/innerHeight,0.1,1000);
+  camera.position.z=6;
 
-  /* LIGHT */
-  const light = new THREE.PointLight(0xffffff,1);
-  light.position.set(10,10,10);
-  scene.add(light);
+  renderer=new THREE.WebGLRenderer({alpha:true,antialias:true});
+  renderer.setSize(innerWidth,innerHeight);
+  menuContainer.appendChild(renderer.domElement);
 
-  /* SPHERE */
-  const sphereGeo = new THREE.SphereGeometry(2,32,32);
-  const sphereMat = new THREE.MeshStandardMaterial({
-    color:0x8e44ad,
-    wireframe:true,
-    transparent:true,
-    opacity:0.3
-  });
-  const sphere = new THREE.Mesh(sphereGeo,sphereMat);
-  scene.add(sphere);
+  group=new THREE.Group();
 
-  /* MENU ITEMS */
-  const menus = [
-    {name:"Surat", text:"💌 Surat"},
-    {name:"Galeri", text:"📷 Galeri"},
-    {name:"Video", text:"🎥 Video"},
-    {name:"Hadiah", text:"🎁 Hadiah"},
-    {name:"Bunga", text:"🌸 Bunga"},
-    {name:"Secret", text:"🔐 Secret"}
+  const menus=[
+    {name:"Surat 💌",id:"surat"},
+    {name:"Galeri 📷",id:"galeri"},
+    {name:"Video 🎥",id:"video"},
+    {name:"Hadiah 🎁",id:"hadiah"},
+    {name:"Lagu 🎶",id:"lagu"},
+    {name:"Tentang Kita 💜",id:"about"}
   ];
 
-  menus.forEach((m,i)=>{
-    const sprite = createLabel(m.text);
-    const phi = Math.acos(-1 + (2*i)/menus.length);
-    const theta = Math.sqrt(menus.length*Math.PI)*phi;
+  const radius=2.5;
 
-    sprite.position.setFromSphericalCoords(2,phi,theta);
-    sprite.userData = m;
-    scene.add(sprite);
+  menus.forEach((m,i)=>{
+    const angle=(i/menus.length)*Math.PI*2;
+    const geo=new THREE.SphereGeometry(0.35,32,32);
+    const mat=new THREE.MeshStandardMaterial({color:0xff4ecd});
+    const mesh=new THREE.Mesh(geo,mat);
+    mesh.position.set(
+      Math.cos(angle)*radius,
+      Math.sin(angle)*radius,
+      0
+    );
+    mesh.userData=m;
+    group.add(mesh);
   });
+
+  scene.add(group);
+
+  const light=new THREE.PointLight(0xffffff,1);
+  light.position.set(5,5,5);
+  scene.add(light);
 
   animate();
 }
 
-/* LABEL */
-function createLabel(text){
-  const div = document.createElement("div");
-  div.className="menu-label";
-  div.innerHTML=text;
-
-  const texture = new THREE.CanvasTexture(htmlToCanvas(div));
-  const material = new THREE.SpriteMaterial({map:texture});
-  const sprite = new THREE.Sprite(material);
-  sprite.scale.set(1.5,0.6,1);
-  sprite.onClick = ()=>openMenu(text);
-  return sprite;
-}
-
-/* HTML to Canvas */
-function htmlToCanvas(el){
-  const canvas = document.createElement("canvas");
-  canvas.width=256;
-  canvas.height=128;
-  const ctx = canvas.getContext("2d");
-  ctx.fillStyle="#fff";
-  ctx.fillRect(0,0,256,128);
-  ctx.fillStyle="#000";
-  ctx.font="24px sans-serif";
-  ctx.textAlign="center";
-  ctx.textBaseline="middle";
-  ctx.fillText(el.innerText,128,64);
-  return canvas;
-}
-
-/* CLICK DETECTION */
-const raycaster = new THREE.Raycaster();
-const mouse = new THREE.Vector2();
-
-window.addEventListener("click",e=>{
-  mouse.x = (e.clientX/window.innerWidth)*2-1;
-  mouse.y = -(e.clientY/window.innerHeight)*2+1;
-  raycaster.setFromCamera(mouse,camera);
-  const intersects = raycaster.intersectObjects(scene.children);
-  if(intersects.length){
-    const obj = intersects[0].object;
-    if(obj.userData?.name){
-      openMenu(obj.userData.name);
-    }
-  }
-});
-
-/* OPEN MENU */
-function openMenu(name){
-  sceneContainer.classList.add("hidden");
-  content.classList.remove("hidden");
-  contentInner.innerHTML = `<h1>${name}</h1><p>Isi menu ${name}</p>`;
-}
-
-/* BACK */
-backBtn.onclick = ()=>{
-  content.classList.add("hidden");
-  sceneContainer.classList.remove("hidden");
-};
-
-/* ANIMATE */
+/* RENDER */
 function animate(){
   requestAnimationFrame(animate);
-  controls.update();
   renderer.render(scene,camera);
 }
 
-/* RESIZE */
-window.onresize=()=>{
-  camera.aspect=window.innerWidth/window.innerHeight;
-  camera.updateProjectionMatrix();
-  renderer.setSize(window.innerWidth,window.innerHeight);
-};
-
-['click','touchstart'].forEach(evt=>{
-  heartLogo.addEventListener(evt, ()=>{
-    openingOverlay.style.opacity = '0';
-    openingOverlay.style.pointerEvents = 'none';
-
-    setTimeout(()=>{
-      openingOverlay.style.display = 'none';
-      menuOrbit.classList.remove('hidden');
-    },1000);
-  }, { once:true });
+/* DRAG ROTATION */
+menuContainer.addEventListener("mousedown",e=>{
+  isDrag=true; lastX=e.clientX; lastY=e.clientY;
 });
+window.addEventListener("mouseup",()=>isDrag=false);
+window.addEventListener("mousemove",e=>{
+  if(!isDrag) return;
+  rotY+=(e.clientX-lastX)*0.005;
+  rotX+=(e.clientY-lastY)*0.005;
+  group.rotation.set(rotX,rotY,0);
+  lastX=e.clientX; lastY=e.clientY;
+});
+
+/* CLICK MENU */
+menuContainer.addEventListener("click",e=>{
+  const mouse=new THREE.Vector2(
+    (e.clientX/innerWidth)*2-1,
+    -(e.clientY/innerHeight)*2+1
+  );
+  const ray=new THREE.Raycaster();
+  ray.setFromCamera(mouse,camera);
+  const hit=ray.intersectObjects(group.children);
+  if(hit.length){
+    openMenu(hit[0].object.userData.id);
+  }
+});
+
+/* ---------- CONTENT ---------- */
+function openMenu(id){
+  menuContainer.classList.add("hidden");
+  content.classList.remove("hidden");
+
+  const data={
+    surat:"<h2>💌 Surat</h2><p>Aku membuat ini karena kamu spesial.</p>",
+    galeri:"<h2>📷 Galeri</h2><p>Isi dengan foto kenangan.</p>",
+    video:"<h2>🎥 Video</h2><p>Tempat video spesial.</p>",
+    hadiah:"<h2>🎁 Hadiah</h2><p>Hadiah kecil penuh makna.</p>",
+    lagu:"<h2>🎶 Lagu</h2><p>Lagu kita berdua.</p>",
+    about:"<h2>💜 Tentang Kita</h2><p>Cerita perjalanan kita.</p>"
+  };
+
+  contentInner.innerHTML=data[id];
+}
+
+/* BACK */
+backBtn.onclick=()=>{
+  content.classList.add("hidden");
+  menuContainer.classList.remove("hidden");
+};
