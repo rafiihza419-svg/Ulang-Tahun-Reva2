@@ -26,6 +26,17 @@ document.addEventListener('DOMContentLoaded', () => {
         particles.appendChild(particle);
     }
 
+    // Heart background particles
+setInterval(()=>{
+    const h = document.createElement('div');
+    h.className = 'heart-particle';
+    h.innerHTML = '💜';
+    h.style.left = Math.random()*100 + 'vw';
+    h.style.animationDuration = (6+Math.random()*6)+'s';
+    document.body.appendChild(h);
+    setTimeout(()=>h.remove(),12000);
+},800);
+
     // Play Ambient Music (dari awal)
     ambientMusic.volume = 0.3;
     ambientMusic.play().catch(() => {});
