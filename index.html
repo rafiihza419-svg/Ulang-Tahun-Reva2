@@ -1,262 +1,291 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>For You 🤍</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>For You ❤️</title>
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Poppins,sans-serif}
-body{background:black;color:white;overflow:hidden}
+/* ===== RESET ===== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  user-select: none;
+  font-family: 'Poppins', sans-serif;
+}
 
-/* ===== PASSWORD ===== */
-#passwordScreen{
-  position:fixed;inset:0;
-  background:radial-gradient(circle,#ff7eb3,#2b0033);
-  display:flex;flex-direction:column;
-  justify-content:center;align-items:center;z-index:20
-}
-#passwordScreen input{
-  padding:12px 20px;border:none;border-radius:25px;margin-top:15px
-}
-#passwordScreen button{
-  margin-top:10px;padding:10px 25px;
-  border:none;border-radius:25px;
-  background:#ff4f9a;color:white;cursor:pointer
+body {
+  background: radial-gradient(circle at top, #ff9acb, #5a0f3c);
+  height: 100vh;
+  overflow: hidden;
+  color: white;
 }
 
 /* ===== OPENING ===== */
-#opening{
-  position:fixed;inset:0;
-  background:radial-gradient(circle,#3a005f,#000);
-  display:none;flex-direction:column;
-  justify-content:center;align-items:center;z-index:10
+#opening {
+  position: fixed;
+  inset: 0;
+  background: #0c0010;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
 }
-.heart{
-  width:120px;height:120px;background:#ff4f9a;
-  transform:rotate(45deg);cursor:pointer;
-  animation:beat 1.2s infinite;
-  box-shadow:0 0 40px #ff4f9a
+
+#heart {
+  font-size: 80px;
+  cursor: pointer;
+  animation: pulse 1.5s infinite;
 }
-.heart::before,.heart::after{
-  content:'';width:120px;height:120px;
-  background:#ff4f9a;border-radius:50%;
-  position:absolute
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+  100% { transform: scale(1); }
 }
-.heart::before{top:-60px}
-.heart::after{left:-60px}
-@keyframes beat{50%{transform:rotate(45deg) scale(1.15)}}
+
+/* ===== PASSWORD ===== */
+#passwordBox {
+  display: none;
+  position: absolute;
+  top: 60%;
+  text-align: center;
+}
+
+input {
+  padding: 10px;
+  border-radius: 20px;
+  border: none;
+  outline: none;
+  text-align: center;
+}
 
 /* ===== MAIN ===== */
-#main{
-  position:fixed;inset:0;display:none;
-  background:linear-gradient(120deg,#ff9a9e,#c77dff,#ffd1ff);
-  animation:bg 12s infinite alternate
-}
-@keyframes bg{to{filter:hue-rotate(40deg)}}
-
-/* ===== SPHERE SCENE ===== */
-.scene{
-  width:100%;height:100%;
-  perspective:1200px;
-  display:flex;justify-content:center;align-items:center
-}
-.sphere{
-  position:relative;
-  width:300px;height:300px;
-  transform-style:preserve-3d;
-  cursor:grab;
+#main {
+  display: none;
+  width: 100%;
+  height: 100%;
+  perspective: 1000px;
 }
 
-/* ===== MENU ITEM ===== */
-.item{
-  position:absolute;
-  width:120px;height:50px;
-  background:rgba(255,255,255,.25);
-  backdrop-filter:blur(10px);
-  border-radius:30px;
-  display:flex;align-items:center;justify-content:center;
-  cursor:pointer;
-  box-shadow:0 8px 25px rgba(0,0,0,.3);
+/* ===== SPHERE ===== */
+#sphere {
+  width: 300px;
+  height: 300px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform-style: preserve-3d;
+  transform: translate(-50%, -50%);
+  cursor: grab;
 }
 
-/* ===== SECTION ===== */
-.section{
-  display:none;
-  position:absolute;inset:0;
-  padding:40px;text-align:center
-}
-.backBtn{
-  position:absolute;top:20px;left:20px;
-  background:rgba(255,255,255,.25);
-  border:none;color:white;
-  padding:8px 18px;border-radius:20px;
-  cursor:pointer
-}
-
-/* ===== GALLERY ===== */
-.gallery{
-  display:grid;grid-template-columns:repeat(3,1fr);gap:10px
-}
-.gallery img{width:100%;border-radius:12px}
-
-/* ===== FLOWERS AMBIENT ===== */
-.ambient{
-  position:fixed;
-  top:-50px;
-  font-size:22px;
-  animation:fall linear infinite;
-  pointer-events:none;
-}
-@keyframes fall{
-  to{transform:translateY(110vh) rotate(360deg)}
+.menu {
+  position: absolute;
+  width: 90px;
+  height: 90px;
+  background: rgba(255,255,255,0.2);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  backdrop-filter: blur(10px);
+  cursor: pointer;
+  transition: 0.3s;
 }
 
-.creator{
-  position:absolute;bottom:10px;width:100%;
-  text-align:center;font-size:12px;opacity:.7
+.menu:hover {
+  background: rgba(255,255,255,0.4);
+  transform: scale(1.1);
+}
+
+/* ===== PAGE ===== */
+.page {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(135deg, #ff7eb3, #ff4f9a);
+  padding: 30px;
+  z-index: 5;
+}
+
+.back {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+/* ===== FLOWERS ===== */
+.flower {
+  position: absolute;
+  font-size: 20px;
+  animation: fall linear infinite;
+}
+
+@keyframes fall {
+  from { transform: translateY(-50px); opacity: 1; }
+  to { transform: translateY(110vh); opacity: 0; }
+}
+
+/* ===== FOOTER ===== */
+#creator {
+  position: fixed;
+  bottom: 10px;
+  right: 15px;
+  font-size: 12px;
+  opacity: 0.7;
 }
 </style>
 </head>
 
 <body>
 
-<!-- PASSWORD -->
-<div id="passwordScreen">
-  <h2>Password 💕</h2>
-  <input type="password" id="pw">
-  <button onclick="checkPW()">Masuk</button>
-</div>
-
 <!-- OPENING -->
 <div id="opening">
-  <div class="heart" onclick="start()"></div>
-  <p>Klik hatinya 🤍</p>
+  <div>
+    <div id="heart">❤️</div>
+    <div id="passwordBox">
+      <p>Masukkan Password</p>
+      <input id="password" type="password" placeholder="hint: tanggal spesial"/>
+    </div>
+  </div>
 </div>
 
 <!-- MAIN -->
 <div id="main">
-<audio id="music" src="assets/music.mp3"></audio>
-
-<div class="scene">
-  <div class="sphere" id="sphere">
-    <div class="item" onclick="openSection('letter')">💌 Surat</div>
-    <div class="item" onclick="openSection('gallery')">📷 Foto</div>
-    <div class="item" onclick="openSection('gift')">🎁 Hadiah</div>
-    <div class="item" onclick="openSection('timeline')">💖 Timeline</div>
-    <div class="item" onclick="openSection('finale')">🎆 Finale</div>
-  </div>
+  <div id="sphere"></div>
 </div>
 
-<!-- SECTIONS -->
-<div class="section" id="letter">
-  <button class="backBtn" onclick="backToMenu()">⬅ Kembali</button>
+<!-- PAGES -->
+<div id="letter" class="page">
+  <div class="back" onclick="back()">⬅ Back</div>
   <h1>💌 Surat</h1>
-  <p>Desde el primer momento, el destino nos unió sin aviso 🤍</p>
+  <p>Ini tempat surat cintamu...</p>
 </div>
 
-<div class="section" id="gallery">
-  <button class="backBtn" onclick="backToMenu()">⬅ Kembali</button>
-  <h1>📷 Recuerdos</h1>
-  <div class="gallery">
-    <img src="assets/photo1.jpg">
-    <img src="assets/photo2.jpg">
-    <img src="assets/photo3.jpg">
-    <img src="assets/photo4.jpg">
-    <img src="assets/photo5.jpg">
-    <img src="assets/photo6.jpg">
-  </div>
+<div id="photo" class="page">
+  <div class="back" onclick="back()">⬅ Back</div>
+  <h1>📸 Foto</h1>
+  <p>Galeri kenangan kalian</p>
 </div>
 
-<div class="section" id="gift">
-  <button class="backBtn" onclick="backToMenu()">⬅ Kembali</button>
-  <h1>🎁 Hadiah</h1>
-  <p>Kejutan kecil penuh cinta 🌸</p>
+<div id="video" class="page">
+  <div class="back" onclick="back()">⬅ Back</div>
+  <h1>🎥 Video</h1>
+  <p>Video spesial untuk dia</p>
 </div>
 
-<div class="section" id="timeline">
-  <button class="backBtn" onclick="backToMenu()">⬅ Kembali</button>
-  <h1>💖 Awal Kita</h1>
-  <p>Cerita sederhana yang jadi luar biasa 🤍</p>
+<div id="gift" class="page">
+  <div class="back" onclick="back()">⬅ Back</div>
+  <h1>🌸 Hadiah Kecil</h1>
+  <p>Klik bunga untuk kejutan</p>
 </div>
 
-<div class="section" id="finale">
-  <button class="backBtn" onclick="backToMenu()">⬅ Kembali</button>
-  <h1>🎆 Happy Birthday 🎂</h1>
+<div id="creatorPage" class="page">
+  <div class="back" onclick="back()">⬅ Back</div>
+  <h1>✨ Tentang Pembuat</h1>
+  <p>Dibuat dengan cinta oleh kamu ❤️</p>
 </div>
 
-<div class="creator">
-  Dibuat dengan 🤍 oleh <b>NAMA_CREATOR</b>
-</div>
-</div>
+<div id="creator">Created by You 💖</div>
 
 <script>
-const PASSWORD="1234";
-let rotX=0,rotY=0,startX=0,startY=0,drag=false;
-const items=document.querySelectorAll(".item");
+/* ===== OPENING ===== */
+const heart = document.getElementById("heart");
+const passwordBox = document.getElementById("passwordBox");
+const opening = document.getElementById("opening");
+const main = document.getElementById("main");
 
-/* POSISI ITEM DI BOLA */
-const radius=130;
-items.forEach((item,i)=>{
-  const phi=Math.acos(-1+(2*i)/items.length);
-  const theta=Math.sqrt(items.length*Math.PI)*phi;
-  const x=radius*Math.cos(theta)*Math.sin(phi);
-  const y=radius*Math.sin(theta)*Math.sin(phi);
-  const z=radius*Math.cos(phi);
-  item.style.transform=`translate3d(${x}px,${y}px,${z}px)`;
+heart.onclick = () => passwordBox.style.display = "block";
+
+document.getElementById("password").addEventListener("keydown", e => {
+  if (e.key === "Enter" && e.target.value === "1234") {
+    opening.style.display = "none";
+    main.style.display = "block";
+    createSphere();
+    flowers();
+  }
 });
 
-/* PASSWORD */
-function checkPW(){
-  if(pw.value===PASSWORD){
-    passwordScreen.style.display="none";
-    opening.style.display="flex";
-  }else alert("Password salah 😜");
+/* ===== SPHERE MENU ===== */
+const sphere = document.getElementById("sphere");
+let rotX = 0, rotY = 0;
+let dragging = false, lastX, lastY;
+
+const menus = [
+  { text: "💌 Surat", page: "letter" },
+  { text: "📸 Foto", page: "photo" },
+  { text: "🎥 Video", page: "video" },
+  { text: "🌸 Hadiah", page: "gift" },
+  { text: "✨ Creator", page: "creatorPage" }
+];
+
+function createSphere() {
+  const radius = 120;
+  menus.forEach((m, i) => {
+    const el = document.createElement("div");
+    el.className = "menu";
+    el.innerText = m.text;
+
+    const phi = Math.acos(-1 + (2 * i) / menus.length);
+    const theta = Math.sqrt(menus.length * Math.PI) * phi;
+
+    const x = radius * Math.cos(theta) * Math.sin(phi);
+    const y = radius * Math.sin(theta) * Math.sin(phi);
+    const z = radius * Math.cos(phi);
+
+    el.style.transform = `translate3d(${x}px, ${y}px, ${z}px)`;
+    el.onclick = () => openPage(m.page);
+
+    sphere.appendChild(el);
+  });
 }
 
-/* START */
-function start(){
-  opening.style.display="none";
-  main.style.display="block";
-  music.play();
-  ambientFlowers();
-}
-
-/* MENU */
-function openSection(id){
-  document.querySelector(".scene").style.display="none";
-  document.querySelectorAll(".section").forEach(s=>s.style.display="none");
-  document.getElementById(id).style.display="block";
-}
-function backToMenu(){
-  document.querySelectorAll(".section").forEach(s=>s.style.display="none");
-  document.querySelector(".scene").style.display="flex";
-}
-
-/* DRAG ROTATION */
-sphere.addEventListener("mousedown",e=>{
-  drag=true;startX=e.clientX;startY=e.clientY
+/* ===== DRAG ROTATION ===== */
+sphere.addEventListener("mousedown", e => {
+  dragging = true;
+  lastX = e.clientX;
+  lastY = e.clientY;
 });
-window.addEventListener("mouseup",()=>drag=false);
-window.addEventListener("mousemove",e=>{
-  if(!drag) return;
-  rotY+=(e.clientX-startX)*0.3;
-  rotX-=(e.clientY-startY)*0.3;
-  sphere.style.transform=`rotateX(${rotX}deg) rotateY(${rotY}deg)`;
-  startX=e.clientX;startY=e.clientY;
+
+window.addEventListener("mouseup", () => dragging = false);
+
+window.addEventListener("mousemove", e => {
+  if (!dragging) return;
+  rotY += (e.clientX - lastX) * 0.3;
+  rotX -= (e.clientY - lastY) * 0.3;
+  sphere.style.transform =
+    `translate(-50%, -50%) rotateX(${rotX}deg) rotateY(${rotY}deg)`;
+  lastX = e.clientX;
+  lastY = e.clientY;
 });
 
-/* AMBIENT FLOWERS */
-function ambientFlowers(){
-  setInterval(()=>{
-    let f=document.createElement("div");
-    f.className="ambient";
-    f.innerHTML="🌸";
-    f.style.left=Math.random()*100+"vw";
-    f.style.animationDuration=(5+Math.random()*5)+"s";
+/* ===== PAGE CONTROL ===== */
+function openPage(id) {
+  main.style.display = "none";
+  document.getElementById(id).style.display = "block";
+}
+
+function back() {
+  document.querySelectorAll(".page").forEach(p => p.style.display = "none");
+  main.style.display = "block";
+}
+
+/* ===== FLOWERS ===== */
+function flowers() {
+  setInterval(() => {
+    const f = document.createElement("div");
+    f.className = "flower";
+    f.innerText = "🌸";
+    f.style.left = Math.random() * 100 + "vw";
+    f.style.animationDuration = 4 + Math.random() * 4 + "s";
     document.body.appendChild(f);
-    setTimeout(()=>f.remove(),10000);
-  },600);
+    setTimeout(() => f.remove(), 8000);
+  }, 300);
 }
 </script>
 
