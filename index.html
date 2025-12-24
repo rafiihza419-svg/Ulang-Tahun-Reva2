@@ -5,9 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Surprise for You 💖</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet"> <!-- Font handwriting -->
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet">
 </head>
 <body>
+    <!-- Opening Overlay (Layar Gelap) -->
+    <div id="opening-overlay">
+        <div id="particles"></div> <!-- Partikel debu/bintang -->
+        <div id="heart-logo">❤️</div>
+        <p id="click-text">Klik hatinya…</p>
+    </div>
+
     <!-- Hidden Message -->
     <div id="hidden-message" class="hidden">
         <p>“Website ini dibuat bukan karena aku jago coding, tapi karena aku ingin menyimpan semua kenangan kita dalam bentuk yang bisa kamu buka kapan pun kamu rindu. Kalau suatu hari web ini masih ada, berarti perasaanku juga masih sama.”</p>
@@ -19,29 +26,39 @@
         <span id="progress-text">Explore: 0%</span>
     </div>
 
-    <!-- Menu Orbit -->
-    <div id="menu-orbit">
+    <!-- Tooltip Petunjuk -->
+    <div id="tooltip">Geser untuk menjelajah 💫 <span id="arrow">↔️</span></div>
+
+    <!-- Menu Orbit (Teaser: Hanya beberapa muncul dulu) -->
+    <div id="menu-orbit" class="hidden">
         <div class="menu-item active" data-menu="surat">💌 Surat</div>
         <div class="menu-item" data-menu="galeri">📷 Galeri</div>
-        <div class="menu-item" data-menu="video">🎥 Video</div>
-        <div class="menu-item" data-menu="hadiah">🎁 Hadiah Kecil</div>
-        <div class="menu-item" data-menu="bunga">🌸 Bunga</div>
-        <div class="menu-item" data-menu="timeline">🕰 Timeline</div>
-        <div class="menu-item" data-menu="lagu">🎶 Lagu Kita</div>
-        <div class="menu-item" data-menu="secret">🔐 Secret</div>
-        <div class="menu-item" data-menu="about">🧠 About Us</div>
-        <div class="menu-item" data-menu="surprise">✨ Surprise</div>
+        <div class="menu-item" data-menu="hadiah">🎁 Hadiah</div>
+        <!-- Menu lain terkunci samar -->
+        <div class="menu-item locked" data-menu="video">🎥 Video</div>
+        <div class="menu-item locked" data-menu="bunga">🌸 Bunga</div>
+        <div class="menu-item locked" data-menu="timeline">🕰 Timeline</div>
+        <div class="menu-item locked" data-menu="lagu">🎶 Lagu Kita</div>
+        <div class="menu-item locked" data-menu="secret">🔐 Secret</div>
+        <div class="menu-item locked" data-menu="about">🧠 About Us</div>
+        <div class="menu-item locked" data-menu="surprise">✨ Surprise</div>
     </div>
 
     <!-- Content Area -->
-    <div id="content">
-        <h1>Selamat Datang di Kejutan Ulang Tahunmu! 💖</h1>
+    <div id="content" class="hidden">
+        <h1 id="welcome-text" class="hidden">Selamat datang di cerita kecil kita.</h1>
         <p>Klik menu di orbit untuk mulai eksplorasi.</p>
     </div>
 
-    <!-- Audio untuk Musik (opsional, ganti src) -->
+    <!-- Petals Falling (Kelopek Bunga Jatuh) -->
+    <div id="petals"></div>
+
+    <!-- Audio -->
+    <audio id="ambient-music" loop>
+        <source src="assets/ambient.mp3" type="audio/mpeg"> <!-- Musik ambient pelan -->
+    </audio>
     <audio id="bg-music" loop>
-        <source src="assets/song.mp3" type="audio/mpeg">
+        <source src="assets/song.mp3" type="audio/mpeg"> <!-- Lagu utama -->
     </audio>
 
     <script src="script.js"></script>
