@@ -261,3 +261,33 @@ body {
     #content { margin-top: 350px; }
     #tooltip { font-size: 0.8em; }
 }
+
+/* Heart Glow Trail */
+#heart-logo::after{
+    content:'';
+    position:absolute;
+    inset:-20px;
+    border-radius:50%;
+    background: radial-gradient(circle, rgba(255,107,107,.4), transparent 70%);
+    animation:pulseGlow 2s infinite;
+}
+
+@keyframes pulseGlow{
+    0%,100%{opacity:.6}
+    50%{opacity:1}
+}
+
+/* Heart Particles */
+.heart-particle{
+    position:fixed;
+    font-size:14px;
+    opacity:.8;
+    animation:floatHeart 8s linear infinite;
+    pointer-events:none;
+}
+
+@keyframes floatHeart{
+    0%{transform:translateY(110vh) scale(.5); opacity:0}
+    20%{opacity:1}
+    100%{transform:translateY(-10vh) scale(1.2); opacity:0}
+}
