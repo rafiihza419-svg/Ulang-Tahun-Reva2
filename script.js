@@ -40,6 +40,7 @@ function init3DMenu(){
 
   renderer=new THREE.WebGLRenderer({alpha:true,antialias:true});
   renderer.setSize(innerWidth,innerHeight);
+  renderer.setClearColor(0x000000, 0);
   menuContainer.appendChild(renderer.domElement);
 
   group=new THREE.Group();
