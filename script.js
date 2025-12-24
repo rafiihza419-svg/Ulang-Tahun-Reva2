@@ -216,3 +216,25 @@ setInterval(()=>{
         }, 5000);
     }
 });
+
+let isDragging=false;
+let lastX=0,lastY=0;
+let rotX=0, rotY=0;
+
+menuOrbit.addEventListener('mousedown',e=>{
+    isDragging=true;
+    lastX=e.clientX;
+    lastY=e.clientY;
+});
+
+window.addEventListener('mouseup',()=>isDragging=false);
+
+window.addEventListener('mousemove',e=>{
+    if(!isDragging) return;
+    rotY += (e.clientX-lastX)*0.3;
+    rotX -= (e.clientY-lastY)*0.3;
+    menuOrbit.style.transform =
+        `translate(-50%,-50%) rotateX(${rotX}deg) rotateY(${rotY}deg)`;
+    lastX=e.clientX;
+    lastY=e.clientY;
+});
