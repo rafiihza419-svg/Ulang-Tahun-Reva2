@@ -1,0 +1,148 @@
+/* Global Styles */
+body {
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(45deg, #ff9a9e, #fecfef);
+    color: #333;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    transition: background 0.5s ease;
+    min-height: 100vh;
+}
+
+/* Hidden Message */
+#hidden-message {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(255, 255, 255, 0.95);
+    padding: 20px;
+    border-radius: 10px;
+    font-family: 'Dancing Script', cursive; /* Handwriting font */
+    font-size: 1.2em;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 1s ease;
+    box-shadow: 0 0 20px rgba(0,0,0,0.3);
+    z-index: 1000;
+}
+
+#hidden-message.show {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* Progress Bar */
+#progress-bar {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    width: 200px;
+    height: 20px;
+    background: rgba(255,255,255,0.8);
+    border-radius: 10px;
+    overflow: hidden;
+    z-index: 10;
+}
+
+#progress-fill {
+    height: 100%;
+    background: #ff6b6b;
+    width: 0%;
+    transition: width 0.3s ease;
+}
+
+#progress-text {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.8em;
+    color: #333;
+}
+
+/* Menu Orbit */
+#menu-orbit {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 300px;
+    height: 300px;
+    animation: rotate 20s linear infinite;
+}
+
+.menu-item {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5em;
+    cursor: pointer;
+    transition: transform 0.3s, box-shadow 0.3s;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.menu-item.active {
+    transform: scale(1.2);
+    box-shadow: 0 0 20px #ff6b6b;
+}
+
+/* Posisi Orbit (10 item, melingkar) */
+.menu-item:nth-child(1) { transform: rotate(0deg) translate(150px) rotate(0deg); }
+.menu-item:nth-child(2) { transform: rotate(36deg) translate(150px) rotate(-36deg); }
+.menu-item:nth-child(3) { transform: rotate(72deg) translate(150px) rotate(-72deg); }
+.menu-item:nth-child(4) { transform: rotate(108deg) translate(150px) rotate(-108deg); }
+.menu-item:nth-child(5) { transform: rotate(144deg) translate(150px) rotate(-144deg); }
+.menu-item:nth-child(6) { transform: rotate(180deg) translate(150px) rotate(-180deg); }
+.menu-item:nth-child(7) { transform: rotate(216deg) translate(150px) rotate(-216deg); }
+.menu-item:nth-child(8) { transform: rotate(252deg) translate(150px) rotate(-252deg); }
+.menu-item:nth-child(9) { transform: rotate(288deg) translate(150px) rotate(-288deg); }
+.menu-item:nth-child(10) { transform: rotate(324deg) translate(150px) rotate(-324deg); }
+
+@keyframes rotate {
+    from { transform: translate(-50%, -50%) rotate(0deg); }
+    to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* Content */
+#content {
+    padding: 20px;
+    margin-top: 400px;
+    text-align: center;
+    min-height: 50vh;
+}
+
+.fade-in {
+    animation: fadeIn 1s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Timeline Scroll */
+.timeline {
+    max-height: 300px;
+    overflow-y: scroll;
+    animation: scrollUp 10s linear infinite;
+}
+
+@keyframes scrollUp {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-100px); }
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    #menu-orbit { width: 250px; height: 250px; }
+    .menu-item { width: 50px; height: 50px; font-size: 1.2em; }
+    #progress-bar { width: 150px; }
+    #content { margin-top: 350px; }
+}
