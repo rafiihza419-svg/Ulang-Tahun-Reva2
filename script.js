@@ -31,17 +31,18 @@ document.addEventListener('DOMContentLoaded', () => {
     ambientMusic.play().catch(() => {});
 
     // Klik Heart Logo (Diperbaiki: Langsung responsif)
-    heartLogo.addEventListener('click', () => {
-        if (isOpened) return; // Cegah double-click
-        isOpened = true;
-        // Meledak jadi partikel cahaya (simulasi)
-        heartLogo.style.animation = 'explode 0.5s ease-out forwards';
+['click', 'touchstart'].forEach(evt => {
+    heartLogo.addEventListener(evt, () => {
+        heartLogo.style.animation = 'explode 0.5s ease-out';
+
         setTimeout(() => {
             openingOverlay.style.opacity = '0';
-            document.body.classList.add('opened'); // Transisi ke dunia utama
+            openingOverlay.style.pointerEvents = 'none';
+
+            document.body.classList.add('opened');
             ambientMusic.pause();
-            bgMusic.play(); // Musik utama
-            // Kelopak bunga jatuh
+            bgMusic.play().catch(()=>{});
+
             for (let i = 0; i < 20; i++) {
                 const petal = document.createElement('div');
                 petal.className = 'petal';
@@ -49,10 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 petal.style.animationDelay = Math.random() * 5 + 's';
                 petals.appendChild(petal);
             }
-            // Zoom in effect (simulasi)
-            document.body.style.transform = 'scale(1.05)';
-            setTimeout(() => document.body.style.transform = 'scale(1)', 2000);
-            // Show menu dan content setelah transisi
+
             setTimeout(() => {
                 openingOverlay.style.display = 'none';
                 menuOrbit.classList.remove('hidden');
@@ -61,7 +59,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 tooltip.classList.add('show');
             }, 2000);
         }, 500);
-    });
+    }, { once: true });
+});
+
 
     // CSS untuk explode (inline)
     const style = document.createElement('style');
