@@ -55,6 +55,9 @@ body{
   position:fixed;
   inset:0;
   z-index:10;
+  background:
+    radial-gradient(circle at top, #ff9a9e, #ff5f6d 40%, #ff2f92 70%, #1a0010);
+  overflow:hidden;
 }
 
 /* CONTENT */
