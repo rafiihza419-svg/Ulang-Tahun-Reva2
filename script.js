@@ -1,189 +1,110 @@
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded',()=>{
 
-  /* ========================
-     ELEMENTS
-  ======================== */
-  const openingOverlay = document.getElementById('opening-overlay');
-  const heartLogo = document.getElementById('heart-logo');
-  const particles = document.getElementById('particles');
-  const petals = document.getElementById('petals');
-  const ambientMusic = document.getElementById('ambient-music');
-  const bgMusic = document.getElementById('bg-music');
-  const menuOrbit = document.getElementById('menu-orbit');
-  const content = document.getElementById('content');
-  const welcomeText = document.getElementById('welcome-text');
-  const tooltip = document.getElementById('tooltip');
-  const menuItems = document.querySelectorAll('.menu-item');
+const opening=document.getElementById('opening-overlay');
+const heart=document.getElementById('heart-logo');
+const menuOrbit=document.getElementById('menu-orbit');
+const content=document.getElementById('content');
+const items=document.querySelectorAll('.menu-item');
+const ambient=document.getElementById('ambient-music');
+const bg=document.getElementById('bg-music');
 
-  let opened = false;
+/* OPENING */
+ambient.volume=0.3;
+ambient.play().catch(()=>{});
 
-  /* ========================
-     PARTICLES (BINTANG)
-  ======================== */
-  for (let i = 0; i < 60; i++) {
-    const p = document.createElement('div');
-    p.className = 'particle';
-    p.style.left = Math.random() * 100 + '%';
-    p.style.animationDelay = Math.random() * 5 + 's';
-    particles.appendChild(p);
+heart.addEventListener('click',()=>{
+  opening.style.opacity=0;
+  ambient.pause();
+  bg.play().catch(()=>{});
+  setTimeout(()=>{
+    opening.style.display='none';
+    menuOrbit.classList.remove('hidden');
+  },1200);
+},{once:true});
+
+/* MENU POSITION (LINGKARAN) */
+const radius=160;
+items.forEach((item,i)=>{
+  const angle=(i/items.length)*Math.PI*2;
+  const x=Math.cos(angle)*radius;
+  const y=Math.sin(angle)*radius;
+  const z=Math.sin(angle)*40;
+  item.style.transform=`translate3d(${x}px,${y}px,${z}px)`;
+});
+
+/* MANUAL ROTATE */
+let drag=false,lx=0,ly=0,rx=0,ry=0;
+
+menuOrbit.addEventListener('mousedown',e=>{
+  drag=true; lx=e.clientX; ly=e.clientY;
+});
+window.addEventListener('mouseup',()=>drag=false);
+window.addEventListener('mousemove',e=>{
+  if(!drag)return;
+  ry+=(e.clientX-lx)*0.25;
+  rx-=(e.clientY-ly)*0.25;
+  menuOrbit.style.transform=
+    `translate(-50%,-50%) rotateX(${rx}deg) rotateY(${ry}deg)`;
+  lx=e.clientX; ly=e.clientY;
+});
+
+/* MENU CLICK */
+items.forEach(item=>{
+  item.onclick=()=>openMenu(item.dataset.menu);
+});
+
+function openMenu(menu){
+  menuOrbit.classList.add('hidden');
+  content.classList.remove('hidden');
+
+  let html=`<button id="back-btn">← Kembali</button><div class="fade-in">`;
+
+  if(menu==='surat'){
+    html+=`<h2>💌 Surat</h2>
+    <p>Sejak awal perjalanan ini, aku tahu kamu adalah rumah yang selalu ingin aku tuju.</p>`;
+  }
+  if(menu==='galeri'){
+    html+=`
+    <h2>📷 Galeri</h2>
+    <div class="gallery">
+      <img src="assets/photo1.jpg">
+      <img src="assets/photo2.jpg">
+      <img src="assets/photo3.jpg">
+      <img src="assets/photo4.jpg">
+      <img src="assets/photo5.jpg">
+      <img src="assets/photo6.jpg">
+    </div>`;
+  }
+  if(menu==='video'){
+    html+=`<h2>🎥 Video</h2>
+    <video controls width="90%">
+      <source src="assets/video.mp4" type="video/mp4">
+    </video>`;
+  }
+  if(menu==='hadiah'){
+    html+=`<h2>🎁 Hadiah Kecil</h2>
+    <p>Hadiah ini sederhana, tapi perasaanku ke kamu luar biasa 💖</p>`;
+  }
+  if(menu==='bunga'){
+    html+=`<h2>🌸 Bunga</h2>
+    <p>Bunga ini akan selalu mekar untukmu 🌷</p>`;
+  }
+  if(menu==='secret'){
+    const p=prompt('Password?');
+    html+= p==='tanggaljadian'
+      ? `<h2>🔐 Rahasia</h2><p>Aku mencintaimu tanpa syarat.</p>`
+      : `<p>Password salah.</p>`;
   }
 
-  /* ========================
-     HEART BACKGROUND PARTICLES
-  ======================== */
-  setInterval(() => {
-    const h = document.createElement('div');
-    h.className = 'heart-particle';
-    h.innerHTML = '💜';
-    h.style.left = Math.random() * 100 + 'vw';
-    h.style.animationDuration = (6 + Math.random() * 6) + 's';
-    document.body.appendChild(h);
-    setTimeout(() => h.remove(), 12000);
-  }, 900);
+  html+=`</div>`;
+  content.innerHTML=html;
+  document.getElementById('back-btn').onclick=back;
+}
 
-  /* ========================
-     OPENING MUSIC
-  ======================== */
-  ambientMusic.volume = 0.3;
-  ambientMusic.play().catch(() => {});
-
-  /* ========================
-     HEART CLICK (OPEN WORLD)
-  ======================== */
-  ['click', 'touchstart'].forEach(evt => {
-    heartLogo.addEventListener(evt, () => {
-      if (opened) return;
-      opened = true;
-
-      heartLogo.style.animation = 'explode 0.6s ease-out';
-
-      setTimeout(() => {
-        openingOverlay.style.opacity = '0';
-        openingOverlay.style.pointerEvents = 'none';
-
-        document.body.classList.add('opened');
-        ambientMusic.pause();
-        bgMusic.play().catch(()=>{});
-
-        for (let i = 0; i < 25; i++) {
-          const petal = document.createElement('div');
-          petal.className = 'petal';
-          petal.style.left = Math.random() * 100 + '%';
-          petal.style.animationDelay = Math.random() * 5 + 's';
-          petals.appendChild(petal);
-        }
-
-        setTimeout(() => {
-          openingOverlay.style.display = 'none';
-          menuOrbit.classList.remove('hidden');
-          content.classList.remove('hidden');
-          welcomeText.classList.remove('hidden');
-          tooltip.classList.add('show');
-        }, 1800);
-      }, 500);
-    }, { once:true });
-  });
-
-  /* ========================
-     3D SPHERE MENU POSITION
-  ======================== */
-  const radius = 140;
-  menuItems.forEach((item, i) => {
-    const phi = Math.acos(-1 + (2 * i) / menuItems.length);
-    const theta = Math.sqrt(menuItems.length * Math.PI) * phi;
-
-    const x = radius * Math.cos(theta) * Math.sin(phi);
-    const y = radius * Math.sin(theta) * Math.sin(phi);
-    const z = radius * Math.cos(phi);
-
-    item.style.transform = `translate3d(${x}px,${y}px,${z}px)`;
-  });
-
-  /* ========================
-     MANUAL ROTATE (DRAG)
-  ======================== */
-  let dragging = false;
-  let lastX = 0, lastY = 0;
-  let rotX = 0, rotY = 0;
-
-  menuOrbit.addEventListener('mousedown', e => {
-    dragging = true;
-    lastX = e.clientX;
-    lastY = e.clientY;
-  });
-
-  window.addEventListener('mouseup', () => dragging = false);
-
-  window.addEventListener('mousemove', e => {
-    if (!dragging) return;
-    rotY += (e.clientX - lastX) * 0.3;
-    rotX -= (e.clientY - lastY) * 0.3;
-    menuOrbit.style.transform =
-      `translate(-50%,-50%) rotateX(${rotX}deg) rotateY(${rotY}deg)`;
-    lastX = e.clientX;
-    lastY = e.clientY;
-  });
-
-  /* ========================
-     FULLSCREEN SECTION
-  ======================== */
-  const section = document.getElementById('section');
-  const sectionContent = document.getElementById('section-content');
-  const backBtn = document.getElementById('backBtn');
-
-  menuItems.forEach(item => {
-    item.addEventListener('click', () => {
-      if (item.classList.contains('locked')) return;
-
-      menuOrbit.style.display = 'none';
-      section.classList.remove('hidden');
-
-      switch (item.dataset.menu) {
-        case 'surat':
-          sectionContent.innerHTML = `<h1>💌 Surat</h1><p>Ini surat cinta untukmu…</p>`;
-          break;
-        case 'galeri':
-          sectionContent.innerHTML = `<h1>📷 Galeri</h1><p>Foto kenangan kita</p>`;
-          break;
-        case 'hadiah':
-          sectionContent.innerHTML = `<h1>🎁 Hadiah</h1><p>Kejutan kecil buat kamu</p>`;
-          break;
-        case 'surprise':
-          startFireworks();
-          break;
-        default:
-          sectionContent.innerHTML = `<h1>✨ Menu</h1><p>Konten segera hadir</p>`;
-      }
-    });
-  });
-
-  backBtn.onclick = () => {
-    section.classList.add('hidden');
-    menuOrbit.style.display = 'block';
-  };
-
-  /* ========================
-     FIREWORK ENDING
-  ======================== */
-  function startFireworks() {
-    sectionContent.innerHTML = '';
-
-    for (let i = 0; i < 40; i++) {
-      const f = document.createElement('div');
-      f.className = 'firework';
-      f.innerHTML = '🎆';
-      f.style.left = Math.random() * 100 + 'vw';
-      f.style.top = Math.random() * 100 + 'vh';
-      document.body.appendChild(f);
-      setTimeout(() => f.remove(), 2000);
-    }
-
-    setTimeout(() => {
-      const t = document.createElement('div');
-      t.id = 'birthdayText';
-      t.innerHTML = '🎉 HAPPY BIRTHDAY 🎉';
-      document.body.appendChild(t);
-    }, 2000);
-  }
+function back(){
+  content.classList.add('hidden');
+  content.innerHTML='';
+  menuOrbit.classList.remove('hidden');
+}
 
 });
