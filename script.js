@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let progress = 0;
     let heartPressTime = 0;
     let cornerClicks = 0;
+    let isOpened = false; // Flag biar gak double-click
 
     // Generate Partikel (Debu/Bintang)
     for (let i = 0; i < 50; i++) {
@@ -25,14 +26,16 @@ document.addEventListener('DOMContentLoaded', () => {
         particles.appendChild(particle);
     }
 
-    // Play Ambient Music
+    // Play Ambient Music (dari awal)
     ambientMusic.volume = 0.3;
     ambientMusic.play().catch(() => {});
 
-    // Klik Heart Logo
+    // Klik Heart Logo (Diperbaiki: Langsung responsif)
     heartLogo.addEventListener('click', () => {
+        if (isOpened) return; // Cegah double-click
+        isOpened = true;
         // Meledak jadi partikel cahaya (simulasi)
-        heartLogo.style.animation = 'explode 0.5s ease-out';
+        heartLogo.style.animation = 'explode 0.5s ease-out forwards';
         setTimeout(() => {
             openingOverlay.style.opacity = '0';
             document.body.classList.add('opened'); // Transisi ke dunia utama
@@ -49,7 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Zoom in effect (simulasi)
             document.body.style.transform = 'scale(1.05)';
             setTimeout(() => document.body.style.transform = 'scale(1)', 2000);
-            // Show menu dan content
+            // Show menu dan content setelah transisi
             setTimeout(() => {
                 openingOverlay.style.display = 'none';
                 menuOrbit.classList.remove('hidden');
@@ -60,7 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 500);
     });
 
-    // CSS untuk explode (tambahan inline)
+    // CSS untuk explode (inline)
     const style = document.createElement('style');
     style.textContent = `
         @keyframes explode {
@@ -70,12 +73,17 @@ document.addEventListener('DOMContentLoaded', () => {
     `;
     document.head.appendChild(style);
 
-    // Menu Interaction (Teaser: Locked menu alert)
+    // Menu Interaction (Teaser: Locked menu alert, unlock setelah progress 50%)
     menuItems.forEach(item => {
         item.addEventListener('click', () => {
             if (item.classList.contains('locked')) {
-                alert('Menu ini terkunci! Jelajahi yang lain dulu. 🔒');
-                return;
+                if (progress >= 50) {
+                    item.classList.remove('locked'); // Unlock otomatis
+                    alert('Menu terbuka! 🎉');
+                } else {
+                    alert('Menu ini terkunci! Jelajahi yang lain dulu untuk unlock. 🔒');
+                    return;
+                }
             }
             menuItems.forEach(i => i.classList.remove('active'));
             item.classList.add('active');
@@ -100,6 +108,100 @@ document.addEventListener('DOMContentLoaded', () => {
                 case 'hadiah':
                     html = `<h2>🎁 Hadiah Kecil</h2><p>Klik untuk download hadiah virtual: <a href="assets/gift.pdf">Download</a></p>`;
                     break;
-                // Menu lain unlock setelah progress 50%
+                case 'video':
+                    html = `<h2>🎥 Video</h2><video controls><source src="assets/video.mp4" type="video/mp4"></video>`;
+                    break;
+                case 'bunga':
+                    html = `<h2>🌸 Bunga</h2><p>Bunga virtual untukmu: 🌹🌷🌻</p>`;
+                    break;
+                case 'timeline':
+                    html = `<h2>🕰 Timeline</h2><div class="timeline"><p>Pertemuan pertama: [Tanggal]</p><p>Momen lucu: [Deskripsi]</p><p>Hari spesial: [Tanggal]</p></div>`;
+                    break;
+                case 'lagu':
+                    html = `<h2>🎶 Lagu Kita</h2><button onclick="toggleMusic()">Play/Pause</button><p>Background berubah warna saat play!</p>`;
+                    break;
+                case 'secret':
+                    const password = prompt('Masukkan password (misal: tanggaljadian):');
+                    if (password === 'tanggaljadian') { // Ganti password
+                        html = `<h2>🔐 Secret</h2><p>Pesan rahasia: Aku sayang kamu selamanya.</p><img src="assets/secret.jpg"><p>Janji kecil: Aku akan selalu ada untukmu.</p>`;
+                    } else {
+                        html = '<p>Password salah! Coba lagi.</p>';
+                    }
+                    break;
+                case 'about':
+                    html = `<h2>🧠 About Us</h2><div class="card" onclick="flipCard(this)"><p>Fun fact: Kita pertama ketemu jam 5 sore.</p><p>Hal random yang kamu suka: [Isi]</p></div>`;
+                    break;
+                case 'surprise':
+                    html = `<h2>✨ Surprise</h2><button onclick="randomSurprise()">Klik untuk Surprise!</button>`;
+                    break;
                 default:
-                    if (progress >=
+                    html = '<p>Konten belum tersedia.</p>';
+            }
+            content.innerHTML = `<div class="fade-in">${html}</div>`;
+        }, 500); // Delay simulasi lazy load
+    }
+
+    // Toggle Musik
+    window.toggleMusic = () => {
+        if (bgMusic.paused) {
+            bgMusic.play();
+            document.body.style.background = 'linear-gradient(45deg, #ffecd2, #fcb69f)'; // Warna sesuai lagu
+        } else {
+            bgMusic.pause();
+            document.body.style.background = 'linear-gradient(45deg, #ff9a9e, #fecfef)';
+        }
+    };
+
+    // Flip Card for About Us
+    window.flipCard = (card) => {
+        card.style.transform = card.style.transform === 'rotateY(180deg)' ? 'rotateY(0deg)' : 'rotateY(180deg)';
+    };
+
+    // Random Surprise
+    window.randomSurprise = () => {
+        const surprises = [
+            () => alert('Quote: Kamu adalah alasan aku tersenyum setiap hari!'),
+            () => { document.body.innerHTML += '<div style="position:fixed;top:0;left:0;width:100%;height:100%;background:red;z-index:999;">Hati Hujan! 💖</div>'; setTimeout(() => location.reload(), 3000); }, // Simulasi hati hujan
+            () => { alert('Mini Game: Klik hati sebanyak mungkin!'); let score = 0; document.addEventListener('click', () => score++, {once: true}); setTimeout(() => alert(`Score: ${score}`), 5000); }
+        ];
+        surprises[Math.floor(Math.random() * surprises.length)]();
+    };
+
+    // Update Progress
+    function updateProgress() {
+        progress = Math.min(progress + 10, 100);
+        progressFill.style.width = `${progress}%`;
+        progressText.textContent = `Explore: ${progress}%`;
+    }
+
+    // Update Background Halus
+    function updateBackground() {
+        const colors = ['#ff9a9e', '#fecfef', '#a8edea', '#fed6e3', '#ffecd2'];
+        document.body.style.background = `linear-gradient(45deg, ${colors[progress % colors.length]}, ${colors[(progress + 1) % colors.length]})`;
+    }
+
+    // Easter Egg: Klik menu 3x untuk unlock hidden
+    let menuClicks = 0;
+    menuItems.forEach(item => {
+        item.addEventListener('click', () => {
+            menuClicks++;
+            if (menuClicks >= 30) { // 3x per menu x 10 menu
+                showHiddenMessage();
+                menuClicks = 0;
+            }
+        });
+    });
+
+    // Hidden Message (untuk easter egg)
+    function showHiddenMessage() {
+        const hiddenMsg = document.getElementById('hidden-message');
+        hiddenMsg.classList.add('show');
+        bgMusic.pause();
+        document.body.style.background = 'linear-gradient(45deg, #a8edea, #fed6e3)';
+        setTimeout(() => {
+            hiddenMsg.classList.remove('show');
+            bgMusic.play();
+            document.body.style.background = 'linear-gradient(45deg, #ff9a9e, #fecfef)';
+        }, 5000);
+    }
+});
