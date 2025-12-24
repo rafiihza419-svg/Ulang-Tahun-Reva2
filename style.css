@@ -60,6 +60,7 @@ body {
     animation: heartbeat 2s ease-in-out infinite;
     cursor: pointer;
     z-index: 2001;
+    pointer-events: auto; /* Pastikan bisa diklik */
 }
 
 @keyframes heartbeat {
