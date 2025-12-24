@@ -55,32 +55,30 @@ body{background:black;color:white;overflow:hidden}
 }
 @keyframes bg{to{filter:hue-rotate(40deg)}}
 
-/* ===== CAROUSEL ===== */
+/* ===== SPHERE SCENE ===== */
 .scene{
   width:100%;height:100%;
-  perspective:1000px;
+  perspective:1200px;
   display:flex;justify-content:center;align-items:center
 }
-.carousel{
-  width:320px;height:320px;
+.sphere{
   position:relative;
+  width:300px;height:300px;
   transform-style:preserve-3d;
-  cursor:grab
+  cursor:grab;
 }
-.card{
-  position:absolute;width:180px;height:120px;
+
+/* ===== MENU ITEM ===== */
+.item{
+  position:absolute;
+  width:120px;height:50px;
   background:rgba(255,255,255,.25);
   backdrop-filter:blur(10px);
-  border-radius:18px;
-  display:flex;justify-content:center;align-items:center;
-  font-size:18px;cursor:pointer;
-  box-shadow:0 10px 30px rgba(0,0,0,.3)
+  border-radius:30px;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;
+  box-shadow:0 8px 25px rgba(0,0,0,.3);
 }
-.card:nth-child(1){transform:rotateY(0deg) translateZ(260px)}
-.card:nth-child(2){transform:rotateY(72deg) translateZ(260px)}
-.card:nth-child(3){transform:rotateY(144deg) translateZ(260px)}
-.card:nth-child(4){transform:rotateY(216deg) translateZ(260px)}
-.card:nth-child(5){transform:rotateY(288deg) translateZ(260px)}
 
 /* ===== SECTION ===== */
 .section{
@@ -102,13 +100,17 @@ body{background:black;color:white;overflow:hidden}
 }
 .gallery img{width:100%;border-radius:12px}
 
-/* ===== FLOWER ===== */
-.flower{width:60px;position:absolute;bottom:0;animation:grow 2s forwards}
-@keyframes grow{from{scale:0}to{scale:1}}
-
-/* ===== FIREWORK ===== */
-.fire{font-size:30px;position:absolute;animation:boom 2s forwards}
-@keyframes boom{to{transform:translateY(-200px);opacity:0}}
+/* ===== FLOWERS AMBIENT ===== */
+.ambient{
+  position:fixed;
+  top:-50px;
+  font-size:22px;
+  animation:fall linear infinite;
+  pointer-events:none;
+}
+@keyframes fall{
+  to{transform:translateY(110vh) rotate(360deg)}
+}
 
 .creator{
   position:absolute;bottom:10px;width:100%;
@@ -137,26 +139,22 @@ body{background:black;color:white;overflow:hidden}
 <audio id="music" src="assets/music.mp3"></audio>
 
 <div class="scene">
-  <div class="carousel" id="carousel">
-    <div class="card" onclick="openSection('letter')">💌 Surat</div>
-    <div class="card" onclick="openSection('gallery')">📷 Foto</div>
-    <div class="card" onclick="openSection('gift')">🎁 Hadiah</div>
-    <div class="card" onclick="openSection('timeline')">💖 Timeline</div>
-    <div class="card" onclick="openSection('finale')">🎆 Finale</div>
+  <div class="sphere" id="sphere">
+    <div class="item" onclick="openSection('letter')">💌 Surat</div>
+    <div class="item" onclick="openSection('gallery')">📷 Foto</div>
+    <div class="item" onclick="openSection('gift')">🎁 Hadiah</div>
+    <div class="item" onclick="openSection('timeline')">💖 Timeline</div>
+    <div class="item" onclick="openSection('finale')">🎆 Finale</div>
   </div>
 </div>
 
-<!-- SURAT -->
+<!-- SECTIONS -->
 <div class="section" id="letter">
   <button class="backBtn" onclick="backToMenu()">⬅ Kembali</button>
   <h1>💌 Surat</h1>
-  <p>
-    Desde el primer momento, el destino nos unió sin aviso.
-    De pequeños pasos nació una historia que hoy llamo hogar.
-  </p>
+  <p>Desde el primer momento, el destino nos unió sin aviso 🤍</p>
 </div>
 
-<!-- GALERI -->
 <div class="section" id="gallery">
   <button class="backBtn" onclick="backToMenu()">⬅ Kembali</button>
   <h1>📷 Recuerdos</h1>
@@ -170,28 +168,21 @@ body{background:black;color:white;overflow:hidden}
   </div>
 </div>
 
-<!-- HADIAH -->
 <div class="section" id="gift">
   <button class="backBtn" onclick="backToMenu()">⬅ Kembali</button>
-  <h1>🎁 Hadiah Kecil</h1>
-  <button onclick="growFlower()">Klik bunga 🌸</button>
+  <h1>🎁 Hadiah</h1>
+  <p>Kejutan kecil penuh cinta 🌸</p>
 </div>
 
-<!-- TIMELINE -->
 <div class="section" id="timeline">
   <button class="backBtn" onclick="backToMenu()">⬅ Kembali</button>
   <h1>💖 Awal Kita</h1>
-  <p>
-    Semua bermula dari hal sederhana,
-    lalu berubah menjadi cerita luar biasa 🤍
-  </p>
+  <p>Cerita sederhana yang jadi luar biasa 🤍</p>
 </div>
 
-<!-- FINALE -->
 <div class="section" id="finale">
   <button class="backBtn" onclick="backToMenu()">⬅ Kembali</button>
   <h1>🎆 Happy Birthday 🎂</h1>
-  <button onclick="firework()">Rayakan 🎉</button>
 </div>
 
 <div class="creator">
@@ -201,8 +192,21 @@ body{background:black;color:white;overflow:hidden}
 
 <script>
 const PASSWORD="1234";
-let angle=0,startX=0,isDrag=false;
+let rotX=0,rotY=0,startX=0,startY=0,drag=false;
+const items=document.querySelectorAll(".item");
 
+/* POSISI ITEM DI BOLA */
+const radius=130;
+items.forEach((item,i)=>{
+  const phi=Math.acos(-1+(2*i)/items.length);
+  const theta=Math.sqrt(items.length*Math.PI)*phi;
+  const x=radius*Math.cos(theta)*Math.sin(phi);
+  const y=radius*Math.sin(theta)*Math.sin(phi);
+  const z=radius*Math.cos(phi);
+  item.style.transform=`translate3d(${x}px,${y}px,${z}px)`;
+});
+
+/* PASSWORD */
 function checkPW(){
   if(pw.value===PASSWORD){
     passwordScreen.style.display="none";
@@ -210,55 +214,49 @@ function checkPW(){
   }else alert("Password salah 😜");
 }
 
+/* START */
 function start(){
   opening.style.display="none";
   main.style.display="block";
   music.play();
+  ambientFlowers();
 }
 
+/* MENU */
 function openSection(id){
   document.querySelector(".scene").style.display="none";
   document.querySelectorAll(".section").forEach(s=>s.style.display="none");
   document.getElementById(id).style.display="block";
 }
-
 function backToMenu(){
   document.querySelectorAll(".section").forEach(s=>s.style.display="none");
   document.querySelector(".scene").style.display="flex";
 }
 
-/* DRAG ROTATE */
-carousel.addEventListener("mousedown",e=>{
-  isDrag=true;startX=e.clientX
+/* DRAG ROTATION */
+sphere.addEventListener("mousedown",e=>{
+  drag=true;startX=e.clientX;startY=e.clientY
 });
-window.addEventListener("mouseup",()=>isDrag=false);
+window.addEventListener("mouseup",()=>drag=false);
 window.addEventListener("mousemove",e=>{
-  if(!isDrag) return;
-  angle+=(e.clientX-startX)*0.3;
-  carousel.style.transform=`rotateY(${angle}deg)`;
-  startX=e.clientX;
+  if(!drag) return;
+  rotY+=(e.clientX-startX)*0.3;
+  rotX-=(e.clientY-startY)*0.3;
+  sphere.style.transform=`rotateX(${rotX}deg) rotateY(${rotY}deg)`;
+  startX=e.clientX;startY=e.clientY;
 });
 
-/* FLOWER */
-function growFlower(){
-  let f=document.createElement("img");
-  f.src="assets/flower.png";
-  f.className="flower";
-  f.style.left=Math.random()*90+"%";
-  gift.appendChild(f);
-}
-
-/* FIREWORK */
-function firework(){
-  for(let i=0;i<20;i++){
+/* AMBIENT FLOWERS */
+function ambientFlowers(){
+  setInterval(()=>{
     let f=document.createElement("div");
-    f.className="fire";
-    f.innerHTML="🎆";
-    f.style.left=Math.random()*100+"%";
-    f.style.bottom="0";
-    finale.appendChild(f);
-    setTimeout(()=>f.remove(),2000);
-  }
+    f.className="ambient";
+    f.innerHTML="🌸";
+    f.style.left=Math.random()*100+"vw";
+    f.style.animationDuration=(5+Math.random()*5)+"s";
+    document.body.appendChild(f);
+    setTimeout(()=>f.remove(),10000);
+  },600);
 }
 </script>
 
