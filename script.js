@@ -12,7 +12,7 @@ const backBtn = document.getElementById("back");
     e.preventDefault();
     opening.remove(); // 🔥 HAPUS TOTAL OPENING
 menuContainer.classList.remove("hidden");
-document.body.style.background = "linear-gradient(135deg,#2d004d,#ff4ecd)";
+document.body.style.background = "linear-gradient(135deg,#ff9a9e,#ff2f92,#ff7a18)";
 init3DMenu();
   }, {once:true});
 });
@@ -45,16 +45,42 @@ function init3DMenu(){
 
   group=new THREE.Group();
 
-  const menus=[
-    {name:"Surat 💌",id:"surat"},
-    {name:"Galeri 📷",id:"galeri"},
-    {name:"Video 🎥",id:"video"},
-    {name:"Hadiah 🎁",id:"hadiah"},
-    {name:"Lagu 🎶",id:"lagu"},
-    {name:"Tentang Kita 💜",id:"about"}
-  ];
+ const menuItems = [
+  { name:"Surat", icon:"icon-surat.png" },
+  { name:"Video", icon:"icon-video.png" },
+  { name:"Foto", icon:"icon-foto.png" },
+  { name:"Hadiah", icon:"icon-hadiah.png" },
+  { name:"Musik", icon:"icon-music.png" }
+];
 
-  const radius=2.5;
+const radius = 3;
+const sprites = [];
+
+const loader = new THREE.TextureLoader();
+
+menuItems.forEach((item, i) => {
+  const texture = loader.load(item.icon);
+
+  const material = new THREE.SpriteMaterial({
+    map: texture,
+    transparent:true
+  });
+
+  const sprite = new THREE.Sprite(material);
+  const angle = (i / menuItems.length) * Math.PI * 2;
+
+  sprite.position.set(
+    Math.cos(angle) * radius,
+    Math.sin(angle) * radius * 0.6,
+    Math.sin(angle) * radius
+  );
+
+  sprite.scale.set(1.2,1.2,1.2);
+  sprite.userData = { menu:item.name };
+
+  scene.add(sprite);
+  sprites.push(sprite);
+});
 
   menus.forEach((m,i)=>{
     const angle=(i/menus.length)*Math.PI*2;
