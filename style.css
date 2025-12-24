@@ -85,3 +85,10 @@ body{
 #content-inner{
   font-size:18px;
 }
+
+#menu-container{
+  position:fixed;
+  inset:0;
+  z-index:10;
+  background:radial-gradient(circle at center,#3a0066,#0b0014);
+}
