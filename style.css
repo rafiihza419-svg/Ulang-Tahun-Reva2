@@ -287,6 +287,18 @@ body {
     pointer-events:none;
 }
 
+.menu-item{
+    transform-style: preserve-3d;
+}
+
+.menu-item::after{
+    content:'';
+    position:absolute;
+    inset:0;
+    border-radius:50%;
+    background:radial-gradient(circle at top, rgba(255,255,255,.4), transparent 70%);
+}
+
 @keyframes floatHeart{
     0%{transform:translateY(110vh) scale(.5); opacity:0}
     20%{opacity:1}
