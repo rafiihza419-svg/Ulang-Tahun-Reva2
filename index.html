@@ -6,168 +6,96 @@
 <title>For You 🤍</title>
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}
-body{
-  background:#000;
-  color:white;
-  overflow:hidden;
-}
+*{margin:0;padding:0;box-sizing:border-box;font-family:Poppins,sans-serif}
+body{background:black;color:white;overflow:hidden}
 
-/* ===== PASSWORD ===== */
+/* PASSWORD */
 #passwordScreen{
-  position:fixed;
-  inset:0;
+  position:fixed;inset:0;
   background:radial-gradient(circle,#ff7eb3,#000);
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
-  z-index:20;
+  display:flex;flex-direction:column;
+  justify-content:center;align-items:center;z-index:20
 }
-#passwordScreen input{
-  padding:12px;
-  border-radius:20px;
-  border:none;
-  text-align:center;
-  margin-top:15px;
-}
-#passwordScreen button{
-  margin-top:10px;
-  padding:10px 20px;
-  border:none;
-  border-radius:20px;
-  background:#ff4f9a;
-  color:white;
-  cursor:pointer;
-}
+#passwordScreen input{padding:12px;border-radius:20px;border:none;margin-top:15px}
+#passwordScreen button{margin-top:10px;padding:10px 25px;border:none;border-radius:20px;background:#ff4f9a;color:white}
 
-/* ===== OPENING ===== */
+/* OPENING */
 #opening{
-  display:none;
-  position:fixed;
-  inset:0;
+  position:fixed;inset:0;
   background:radial-gradient(circle,#ff9a9e,#000);
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  flex-direction:column;
-  z-index:10;
+  display:none;flex-direction:column;
+  justify-content:center;align-items:center;z-index:10
 }
-
 .heart{
-  width:120px;
-  height:120px;
-  background:#ff4f9a;
-  transform:rotate(45deg);
-  animation:beat 1.2s infinite;
-  cursor:pointer;
-  box-shadow:0 0 30px #ff4f9a;
+  width:120px;height:120px;background:#ff4f9a;
+  transform:rotate(45deg);cursor:pointer;
+  animation:beat 1.2s infinite
 }
 .heart::before,.heart::after{
-  content:'';
-  width:120px;
-  height:120px;
-  background:#ff4f9a;
-  border-radius:50%;
-  position:absolute;
+  content:'';width:120px;height:120px;
+  background:#ff4f9a;border-radius:50%;
+  position:absolute
 }
 .heart::before{top:-60px}
 .heart::after{left:-60px}
+@keyframes beat{50%{transform:rotate(45deg) scale(1.15)}}
 
-@keyframes beat{
-  50%{transform:rotate(45deg) scale(1.15)}
-}
-
-/* ===== MAIN ===== */
+/* MAIN */
 #main{
-  display:none;
-  position:fixed;
-  inset:0;
+  position:fixed;inset:0;display:none;
   background:linear-gradient(120deg,#ff9a9e,#fad0c4,#ffd1ff);
-  animation:bg 12s infinite alternate;
+  animation:bg 12s infinite alternate
 }
-@keyframes bg{
-  0%{filter:hue-rotate(0deg)}
-  100%{filter:hue-rotate(40deg)}
-}
+@keyframes bg{to{filter:hue-rotate(40deg)}}
 
-/* ===== 3D ORBIT ===== */
+/* 3D CAROUSEL */
 .scene{
-  width:100%;
-  height:100%;
+  width:100%;height:100%;
   perspective:1000px;
-  display:flex;
-  justify-content:center;
-  align-items:center;
+  display:flex;justify-content:center;align-items:center
 }
 .carousel{
+  width:320px;height:320px;
   position:relative;
-  width:300px;
-  height:300px;
   transform-style:preserve-3d;
-  animation:spin 18s linear infinite;
-}
-@keyframes spin{
-  from{transform:rotateY(0deg)}
-  to{transform:rotateY(360deg)}
+  cursor:grab
 }
 .card{
-  position:absolute;
-  width:180px;
-  height:120px;
-  background:rgba(255,255,255,.2);
+  position:absolute;width:180px;height:120px;
+  background:rgba(255,255,255,.25);
   backdrop-filter:blur(10px);
   border-radius:15px;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  font-size:18px;
-  cursor:pointer;
+  display:flex;justify-content:center;align-items:center;
+  font-size:18px;cursor:pointer
 }
-.card:nth-child(1){transform:rotateY(0deg) translateZ(220px)}
-.card:nth-child(2){transform:rotateY(120deg) translateZ(220px)}
-.card:nth-child(3){transform:rotateY(240deg) translateZ(220px)}
+.card:nth-child(1){transform:rotateY(0deg) translateZ(260px)}
+.card:nth-child(2){transform:rotateY(72deg) translateZ(260px)}
+.card:nth-child(3){transform:rotateY(144deg) translateZ(260px)}
+.card:nth-child(4){transform:rotateY(216deg) translateZ(260px)}
+.card:nth-child(5){transform:rotateY(288deg) translateZ(260px)}
 
-/* ===== SECTION ===== */
+/* SECTION */
 .section{
   display:none;
-  position:absolute;
-  inset:0;
-  padding:40px;
-  text-align:center;
+  position:absolute;inset:0;
+  padding:40px;text-align:center
 }
-
-/* ===== GALLERY ===== */
 .gallery{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:10px;
+  display:grid;grid-template-columns:repeat(3,1fr);gap:10px
 }
-.gallery img{
-  width:100%;
-  border-radius:10px;
-}
+.gallery img{width:100%;border-radius:10px}
 
-/* ===== FLOWER ===== */
-.flower{
-  width:60px;
-  position:absolute;
-  bottom:0;
-  animation:grow 2s forwards;
-}
-@keyframes grow{
-  from{transform:scale(0)}
-  to{transform:scale(1)}
-}
+/* FLOWER */
+.flower{width:60px;position:absolute;bottom:0;animation:grow 2s forwards}
+@keyframes grow{from{scale:0}to{scale:1}}
 
-/* ===== CREATOR ===== */
+/* FIREWORK */
+.fire{font-size:30px;position:absolute;animation:boom 2s forwards}
+@keyframes boom{to{transform:translateY(-200px);opacity:0}}
+
 .creator{
-  position:absolute;
-  bottom:10px;
-  width:100%;
-  text-align:center;
-  font-size:12px;
-  opacity:.7;
+  position:absolute;bottom:10px;width:100%;
+  text-align:center;font-size:12px;opacity:.7
 }
 </style>
 </head>
@@ -176,7 +104,7 @@ body{
 
 <!-- PASSWORD -->
 <div id="passwordScreen">
-  <h2>Masukkan Password 💕</h2>
+  <h2>Password 💕</h2>
   <input type="password" id="pw">
   <button onclick="checkPW()">Masuk</button>
 </div>
@@ -192,24 +120,26 @@ body{
 <audio id="music" src="assets/music.mp3"></audio>
 
 <div class="scene">
-  <div class="carousel">
+  <div class="carousel" id="carousel">
     <div class="card" onclick="openSection('letter')">💌 Surat</div>
     <div class="card" onclick="openSection('gallery')">📷 Foto</div>
     <div class="card" onclick="openSection('gift')">🎁 Hadiah</div>
+    <div class="card" onclick="openSection('timeline')">💖 Timeline</div>
+    <div class="card" onclick="openSection('finale')">🎆 Finale</div>
   </div>
 </div>
 
 <div class="section" id="letter">
-  <h1>Para Ti 🤍</h1>
+  <h1>💌 Surat</h1>
   <p>
     Desde el primer momento, el destino nos unió sin aviso.
     Cada risa y cada paso juntos se convirtieron en una historia
-    que sigue creciendo con amor y sueños compartidos.
+    que sigue creciendo con amor.
   </p>
 </div>
 
 <div class="section" id="gallery">
-  <h1>Recuerdos</h1>
+  <h1>📷 Recuerdos</h1>
   <div class="gallery">
     <img src="assets/photo1.jpg">
     <img src="assets/photo2.jpg">
@@ -221,8 +151,21 @@ body{
 </div>
 
 <div class="section" id="gift">
-  <h1>Hadiah Kecil 🌸</h1>
-  <button onclick="growFlower()">Klik bunga</button>
+  <h1>🎁 Hadiah</h1>
+  <button onclick="growFlower()">Klik bunga 🌸</button>
+</div>
+
+<div class="section" id="timeline">
+  <h1>💖 Awal Kita</h1>
+  <p>
+    Semua bermula dari hal sederhana,
+    lalu berubah menjadi cerita yang luar biasa 🤍
+  </p>
+</div>
+
+<div class="section" id="finale">
+  <h1>🎆 Happy Birthday 🎂</h1>
+  <button onclick="firework()">Rayakan 🎉</button>
 </div>
 
 <div class="creator">
@@ -231,21 +174,20 @@ body{
 </div>
 
 <script>
-const PASSWORD = "1234"; // GANTI
+const PASSWORD="1234";
+let angle=0,startX=0,isDrag=false;
 
 function checkPW(){
-  if(document.getElementById("pw").value === PASSWORD){
-    document.getElementById("passwordScreen").style.display="none";
-    document.getElementById("opening").style.display="flex";
-  }else{
-    alert("Password salah 😜");
-  }
+  if(pw.value===PASSWORD){
+    passwordScreen.style.display="none";
+    opening.style.display="flex";
+  }else alert("Password salah 😜");
 }
 
 function start(){
-  document.getElementById("opening").style.display="none";
-  document.getElementById("main").style.display="block";
-  document.getElementById("music").play();
+  opening.style.display="none";
+  main.style.display="block";
+  music.play();
 }
 
 function openSection(id){
@@ -253,12 +195,38 @@ function openSection(id){
   document.getElementById(id).style.display="block";
 }
 
+/* DRAG ROTATE */
+carousel.addEventListener("mousedown",e=>{
+  isDrag=true;startX=e.clientX
+});
+window.addEventListener("mouseup",()=>isDrag=false);
+window.addEventListener("mousemove",e=>{
+  if(!isDrag) return;
+  angle+=(e.clientX-startX)*0.3;
+  carousel.style.transform=`rotateY(${angle}deg)`;
+  startX=e.clientX;
+});
+
+/* FLOWER */
 function growFlower(){
   let f=document.createElement("img");
   f.src="assets/flower.png";
   f.className="flower";
-  f.style.left=Math.random()*100+"%";
-  document.getElementById("gift").appendChild(f);
+  f.style.left=Math.random()*90+"%";
+  gift.appendChild(f);
+}
+
+/* FIREWORK */
+function firework(){
+  for(let i=0;i<20;i++){
+    let f=document.createElement("div");
+    f.className="fire";
+    f.innerHTML="🎆";
+    f.style.left=Math.random()*100+"%";
+    f.style.bottom="0";
+    finale.appendChild(f);
+    setTimeout(()=>f.remove(),2000);
+  }
 }
 </script>
 
