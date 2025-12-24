@@ -112,3 +112,19 @@ body{
     opacity:0;
   }
 }
+
+.heart-particle{
+  position:fixed;
+  bottom:-20px;
+  font-size:14px;
+  opacity:.7;
+  animation:floatHeart linear forwards;
+  pointer-events:none;
+}
+
+@keyframes floatHeart{
+  to{
+    transform:translateY(-110vh) scale(1.5);
+    opacity:0;
+  }
+}
