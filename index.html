@@ -11,15 +11,14 @@ html, body {
   width: 100%;
   height: 100%;
   overflow: hidden;
-  background: radial-gradient(circle at top, #ffd1e8, #ff7abf);
+  background: radial-gradient(circle at top, #ffd6ea, #ff6fb1);
   font-family: 'Poppins', sans-serif;
 }
 
-/* SCENE */
 .scene {
   width: 100%;
   height: 100%;
-  perspective: 1200px;
+  perspective: 1600px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -28,17 +27,16 @@ html, body {
 /* SPHERE */
 .sphere {
   position: relative;
-  width: 420px;
-  height: 420px;
+  width: 600px;
+  height: 600px;
   transform-style: preserve-3d;
-  animation: spin 20s linear infinite;
 }
 
-/* BUTTON ORBIT */
+/* MENU BUTTON */
 .orbit-item {
   position: absolute;
-  width: 120px;
-  height: 120px;
+  width: 130px;
+  height: 130px;
   background: linear-gradient(145deg, #ff5fa2, #ff2f92);
   border-radius: 50%;
   display: flex;
@@ -46,33 +44,24 @@ html, body {
   justify-content: center;
   align-items: center;
   color: white;
-  font-size: 14px;
+  font-size: 15px;
   font-weight: bold;
-  box-shadow: 0 0 25px rgba(255, 80, 160, 0.8);
+  box-shadow: 0 0 30px rgba(255, 80, 160, 0.9);
   cursor: pointer;
-  transition: transform 0.3s, box-shadow 0.3s;
+  user-select: none;
 }
 
-.orbit-item:hover {
-  box-shadow: 0 0 40px rgba(255, 120, 200, 1);
-}
-
-/* FLOWER */
+/* FLOWERS */
 .flower {
   position: absolute;
-  font-size: 28px;
-  animation: float 6s ease-in-out infinite;
-}
-
-/* ANIMATIONS */
-@keyframes spin {
-  from { transform: rotateX(0deg) rotateY(0deg); }
-  to   { transform: rotateX(360deg) rotateY(360deg); }
+  font-size: 26px;
+  opacity: 0.9;
+  animation: float 5s ease-in-out infinite;
 }
 
 @keyframes float {
   0%,100% { transform: translateY(0); }
-  50% { transform: translateY(-20px); }
+  50% { transform: translateY(-15px); }
 }
 </style>
 </head>
@@ -83,40 +72,32 @@ html, body {
   <div class="sphere" id="sphere">
 
     <!-- MENU -->
-    <div class="orbit-item" style="transform: rotateY(0deg) translateZ(220px);">
-      🎁<br>Hadiah
-    </div>
+    <div class="orbit-item" style="transform: rotateY(0deg) translateZ(300px);">🎁<br>Hadiah</div>
+    <div class="orbit-item" style="transform: rotateY(72deg) translateZ(300px);">💌<br>Pesan</div>
+    <div class="orbit-item" style="transform: rotateY(144deg) translateZ(300px);">📸<br>Kenangan</div>
+    <div class="orbit-item" style="transform: rotateY(216deg) translateZ(300px);">❤️<br>Untukmu</div>
+    <div class="orbit-item" style="transform: rotateY(288deg) translateZ(300px);">🌸<br>Bunga</div>
 
-    <div class="orbit-item" style="transform: rotateY(72deg) translateZ(220px);">
-      💌<br>Pesan
-    </div>
-
-    <div class="orbit-item" style="transform: rotateY(144deg) translateZ(220px);">
-      📸<br>Kenangan
-    </div>
-
-    <div class="orbit-item" style="transform: rotateY(216deg) translateZ(220px);">
-      ❤️<br>Untukmu
-    </div>
-
-    <div class="orbit-item" style="transform: rotateY(288deg) translateZ(220px);">
-      🌸<br>Bunga
-    </div>
-
-    <!-- FLOWERS -->
-    <div class="flower" style="transform: rotateY(30deg) translateZ(300px);">🌸</div>
-    <div class="flower" style="transform: rotateY(120deg) translateZ(280px);">🌷</div>
-    <div class="flower" style="transform: rotateY(210deg) translateZ(320px);">🌹</div>
-    <div class="flower" style="transform: rotateY(300deg) translateZ(290px);">💐</div>
+    <!-- FLOWERS (FULL SPHERE) -->
+    <div class="flower" style="transform: rotateY(0deg) rotateX(30deg) translateZ(260px);">🌸</div>
+    <div class="flower" style="transform: rotateY(45deg) rotateX(-20deg) translateZ(280px);">🌷</div>
+    <div class="flower" style="transform: rotateY(90deg) rotateX(60deg) translateZ(250px);">🌹</div>
+    <div class="flower" style="transform: rotateY(135deg) rotateX(-45deg) translateZ(290px);">💐</div>
+    <div class="flower" style="transform: rotateY(180deg) rotateX(20deg) translateZ(270px);">🌺</div>
+    <div class="flower" style="transform: rotateY(225deg) rotateX(-60deg) translateZ(260px);">🌸</div>
+    <div class="flower" style="transform: rotateY(270deg) rotateX(40deg) translateZ(300px);">🌷</div>
+    <div class="flower" style="transform: rotateY(315deg) rotateX(-30deg) translateZ(280px);">🌹</div>
 
   </div>
 </div>
 
 <script>
 const sphere = document.getElementById('sphere');
+
 let isDragging = false;
 let startX, startY;
-let rotX = 0, rotY = 0;
+let rotX = 0;
+let rotY = 0;
 
 document.addEventListener('mousedown', e => {
   isDragging = true;
@@ -126,14 +107,22 @@ document.addEventListener('mousedown', e => {
 
 document.addEventListener('mousemove', e => {
   if (!isDragging) return;
-  rotY += (e.clientX - startX) * 0.3;
-  rotX -= (e.clientY - startY) * 0.3;
+
+  const dx = e.clientX - startX;
+  const dy = e.clientY - startY;
+
+  rotY += dx * 0.4;
+  rotX -= dy * 0.4;
+
   sphere.style.transform = `rotateX(${rotX}deg) rotateY(${rotY}deg)`;
+
   startX = e.clientX;
   startY = e.clientY;
 });
 
-document.addEventListener('mouseup', () => isDragging = false);
+document.addEventListener('mouseup', () => {
+  isDragging = false;
+});
 </script>
 
 </body>
