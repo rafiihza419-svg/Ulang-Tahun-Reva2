@@ -2,288 +2,263 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<title>Happy Birthday ❤️</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For You 🤍</title>
 
 <style>
-*{box-sizing:border-box}
-
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}
 body{
-  margin:0;
-  font-family:'Segoe UI',sans-serif;
-  height:100vh;
+  background:#000;
+  color:white;
   overflow:hidden;
-  background:linear-gradient(120deg,#ff6fae,#ff9ad5,#ffd1ea);
-  background-size:400% 400%;
-  animation:bgMove 12s ease infinite;
 }
 
-@keyframes bgMove{
-  0%{background-position:0% 50%}
-  50%{background-position:100% 50%}
-  100%{background-position:0% 50%}
-}
-
-/* ===== START SCREEN ===== */
-#start{
+/* ===== PASSWORD ===== */
+#passwordScreen{
   position:fixed;
   inset:0;
-  background:black;
+  background:radial-gradient(circle,#ff7eb3,#000);
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  z-index:20;
+}
+#passwordScreen input{
+  padding:12px;
+  border-radius:20px;
+  border:none;
+  text-align:center;
+  margin-top:15px;
+}
+#passwordScreen button{
+  margin-top:10px;
+  padding:10px 20px;
+  border:none;
+  border-radius:20px;
+  background:#ff4f9a;
+  color:white;
+  cursor:pointer;
+}
+
+/* ===== OPENING ===== */
+#opening{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:radial-gradient(circle,#ff9a9e,#000);
   display:flex;
   justify-content:center;
   align-items:center;
+  flex-direction:column;
   z-index:10;
 }
 
-#heartLogo{
-  font-size:90px;
+.heart{
+  width:120px;
+  height:120px;
+  background:#ff4f9a;
+  transform:rotate(45deg);
+  animation:beat 1.2s infinite;
   cursor:pointer;
-  animation:pulse 1.5s infinite;
+  box-shadow:0 0 30px #ff4f9a;
 }
+.heart::before,.heart::after{
+  content:'';
+  width:120px;
+  height:120px;
+  background:#ff4f9a;
+  border-radius:50%;
+  position:absolute;
+}
+.heart::before{top:-60px}
+.heart::after{left:-60px}
 
-@keyframes pulse{
-  0%,100%{transform:scale(1)}
-  50%{transform:scale(1.2)}
+@keyframes beat{
+  50%{transform:rotate(45deg) scale(1.15)}
 }
 
 /* ===== MAIN ===== */
 #main{
   display:none;
-  height:100vh;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  animation:fadeZoom 1.2s ease forwards;
+  position:fixed;
+  inset:0;
+  background:linear-gradient(120deg,#ff9a9e,#fad0c4,#ffd1ff);
+  animation:bg 12s infinite alternate;
 }
-
-@keyframes fadeZoom{
-  from{opacity:0; transform:scale(.8)}
-  to{opacity:1; transform:scale(1)}
+@keyframes bg{
+  0%{filter:hue-rotate(0deg)}
+  100%{filter:hue-rotate(40deg)}
 }
 
 /* ===== 3D ORBIT ===== */
 .scene{
-  width:320px;
-  height:320px;
-  perspective:1000px;
-}
-
-.orbit{
   width:100%;
   height:100%;
-  position:relative;
-  transform-style:preserve-3d;
-  transition:transform .4s;
-}
-
-.item{
-  position:absolute;
-  top:50%;
-  left:50%;
-  width:80px;
-  height:80px;
-  margin:-40px;
-  background:#ff5fa2;
-  color:white;
-  border-radius:50%;
+  perspective:1000px;
   display:flex;
-  flex-direction:column;
   justify-content:center;
   align-items:center;
-  cursor:pointer;
-  box-shadow:0 15px 35px rgba(0,0,0,.35);
-  user-select:none;
 }
-
-.item span{
-  font-size:12px;
-  margin-top:4px;
+.carousel{
+  position:relative;
+  width:300px;
+  height:300px;
+  transform-style:preserve-3d;
+  animation:spin 18s linear infinite;
 }
-
-/* ===== CARD ===== */
+@keyframes spin{
+  from{transform:rotateY(0deg)}
+  to{transform:rotateY(360deg)}
+}
 .card{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.6);
-  display:none;
+  position:absolute;
+  width:180px;
+  height:120px;
+  background:rgba(255,255,255,.2);
+  backdrop-filter:blur(10px);
+  border-radius:15px;
+  display:flex;
   justify-content:center;
   align-items:center;
-  z-index:5;
+  font-size:18px;
+  cursor:pointer;
 }
+.card:nth-child(1){transform:rotateY(0deg) translateZ(220px)}
+.card:nth-child(2){transform:rotateY(120deg) translateZ(220px)}
+.card:nth-child(3){transform:rotateY(240deg) translateZ(220px)}
 
-.cardBox{
-  background:white;
-  width:340px;
-  padding:25px;
-  border-radius:25px;
+/* ===== SECTION ===== */
+.section{
+  display:none;
+  position:absolute;
+  inset:0;
+  padding:40px;
   text-align:center;
-}
-
-/* ===== GLOW ===== */
-.glow{
-  position:fixed;
-  width:20px;
-  height:20px;
-  border-radius:50%;
-  background:radial-gradient(circle,#ff9ad5,transparent 70%);
-  animation:glow .8s ease-out forwards;
-  pointer-events:none;
-}
-
-@keyframes glow{
-  to{transform:scale(6);opacity:0}
 }
 
 /* ===== GALLERY ===== */
 .gallery{
   display:grid;
   grid-template-columns:repeat(3,1fr);
-  gap:8px;
+  gap:10px;
 }
 .gallery img{
   width:100%;
-  height:90px;
-  object-fit:cover;
   border-radius:10px;
 }
 
 /* ===== FLOWER ===== */
 .flower{
-  position:fixed;
+  width:60px;
+  position:absolute;
   bottom:0;
-  font-size:28px;
-  animation:grow 1s ease forwards;
+  animation:grow 2s forwards;
 }
 @keyframes grow{
   from{transform:scale(0)}
   to{transform:scale(1)}
 }
+
+/* ===== CREATOR ===== */
+.creator{
+  position:absolute;
+  bottom:10px;
+  width:100%;
+  text-align:center;
+  font-size:12px;
+  opacity:.7;
+}
 </style>
 </head>
 
-<body onclick="glow(event)">
+<body>
 
-<!-- START -->
-<div id="start">
-  <div id="heartLogo" onclick="openSite()">💗</div>
+<!-- PASSWORD -->
+<div id="passwordScreen">
+  <h2>Masukkan Password 💕</h2>
+  <input type="password" id="pw">
+  <button onclick="checkPW()">Masuk</button>
 </div>
 
-<!-- MAIN ORBIT -->
+<!-- OPENING -->
+<div id="opening">
+  <div class="heart" onclick="start()"></div>
+  <p>Klik hatinya 🤍</p>
+</div>
+
+<!-- MAIN -->
 <div id="main">
-  <div class="scene">
-    <div class="orbit" id="orbit">
-      <div class="item" onclick="openMenu('letter')">💌<span>Surat</span></div>
-      <div class="item" onclick="openMenu('gallery')">🖼<span>Foto</span></div>
-      <div class="item" onclick="openMenu('video')">🎥<span>Video</span></div>
-      <div class="item" onclick="openMenu('gift')">🎁<span>Hadiah</span></div>
-      <div class="item" onclick="openMenu('creator')">💖<span>Untukmu</span></div>
-    </div>
+<audio id="music" src="assets/music.mp3"></audio>
+
+<div class="scene">
+  <div class="carousel">
+    <div class="card" onclick="openSection('letter')">💌 Surat</div>
+    <div class="card" onclick="openSection('gallery')">📷 Foto</div>
+    <div class="card" onclick="openSection('gift')">🎁 Hadiah</div>
   </div>
 </div>
 
-<!-- CARD -->
-<div class="card" id="card">
-  <div class="cardBox" id="cardBox"></div>
+<div class="section" id="letter">
+  <h1>Para Ti 🤍</h1>
+  <p>
+    Desde el primer momento, el destino nos unió sin aviso.
+    Cada risa y cada paso juntos se convirtieron en una historia
+    que sigue creciendo con amor y sueños compartidos.
+  </p>
+</div>
+
+<div class="section" id="gallery">
+  <h1>Recuerdos</h1>
+  <div class="gallery">
+    <img src="assets/photo1.jpg">
+    <img src="assets/photo2.jpg">
+    <img src="assets/photo3.jpg">
+    <img src="assets/photo4.jpg">
+    <img src="assets/photo5.jpg">
+    <img src="assets/photo6.jpg">
+  </div>
+</div>
+
+<div class="section" id="gift">
+  <h1>Hadiah Kecil 🌸</h1>
+  <button onclick="growFlower()">Klik bunga</button>
+</div>
+
+<div class="creator">
+  Dibuat dengan 🤍 oleh <b>NAMA_CREATOR</b>
+</div>
 </div>
 
 <script>
-/* OPEN */
-function openSite(){
-  start.style.display="none";
-  main.style.display="flex";
-}
+const PASSWORD = "1234"; // GANTI
 
-/* GLOW */
-function glow(e){
-  let g=document.createElement("div");
-  g.className="glow";
-  g.style.left=e.clientX+"px";
-  g.style.top=e.clientY+"px";
-  document.body.appendChild(g);
-  setTimeout(()=>g.remove(),800);
-}
-
-/* ORBIT POSITION */
-const items=document.querySelectorAll('.item');
-const total=items.length;
-const radius=140;
-
-items.forEach((item,i)=>{
-  const angle=(360/total)*i;
-  item.style.transform=`rotateY(${angle}deg) translateZ(${radius}px)`;
-});
-
-/* DRAG ROTATE */
-let rotY=0,startX;
-orbit.onmousedown=e=>{
-  startX=e.clientX;
-  document.onmousemove=ev=>{
-    rotY+=(ev.clientX-startX)*0.3;
-    orbit.style.transform=`rotateY(${rotY}deg)`;
-    startX=ev.clientX;
-  }
-  document.onmouseup=()=>document.onmousemove=null;
-};
-
-/* MENU */
-function openMenu(type){
-  card.style.display="flex";
-  if(type==="letter"){
-    cardBox.innerHTML=`
-      <h2>💌 Surat</h2>
-      <p style="text-align:left">
-      Dari awal perjalanan kecil itu, aku tidak pernah
-      menyangka akan sejauh ini. Terima kasih sudah
-      hadir dan membuat hidupku lebih hangat 🤍
-      </p>
-      <button onclick="closeCard()">Tutup</button>`;
-  }
-
-  if(type==="gallery"){
-    cardBox.innerHTML=`
-      <h2>🖼 Foto</h2>
-      <div class="gallery">
-        <img src="foto1.jpg">
-        <img src="foto2.jpg">
-        <img src="foto3.jpg">
-        <img src="foto4.jpg">
-        <img src="foto5.jpg">
-        <img src="foto6.jpg">
-      </div>
-      <button onclick="closeCard()">Tutup</button>`;
-  }
-
-  if(type==="video"){
-    cardBox.innerHTML=`
-      <h2>🎥 Video</h2>
-      <video controls width="100%">
-        <source src="video.mp4" type="video/mp4">
-      </video>
-      <button onclick="closeCard()">Tutup</button>`;
-  }
-
-  if(type==="gift"){
-    let f=document.createElement("div");
-    f.className="flower";
-    f.innerHTML="🌸";
-    f.style.left=Math.random()*100+"vw";
-    document.body.appendChild(f);
-    setTimeout(()=>f.remove(),2000);
-  }
-
-  if(type==="creator"){
-    cardBox.innerHTML=`
-      <h2>💖 Untuk Kamu</h2>
-      <p style="text-align:left">
-      Terima kasih sudah membuat semua ini untuk aku.
-      Setiap detailnya terasa penuh perhatian.
-      Aku merasa sangat dicintai 🤍
-      </p>
-      <button onclick="closeCard()">Tutup</button>`;
+function checkPW(){
+  if(document.getElementById("pw").value === PASSWORD){
+    document.getElementById("passwordScreen").style.display="none";
+    document.getElementById("opening").style.display="flex";
+  }else{
+    alert("Password salah 😜");
   }
 }
 
-function closeCard(){
-  card.style.display="none";
+function start(){
+  document.getElementById("opening").style.display="none";
+  document.getElementById("main").style.display="block";
+  document.getElementById("music").play();
+}
+
+function openSection(id){
+  document.querySelectorAll(".section").forEach(s=>s.style.display="none");
+  document.getElementById(id).style.display="block";
+}
+
+function growFlower(){
+  let f=document.createElement("img");
+  f.src="assets/flower.png";
+  f.className="flower";
+  f.style.left=Math.random()*100+"%";
+  document.getElementById("gift").appendChild(f);
 }
 </script>
 
