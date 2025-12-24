@@ -1,162 +1,118 @@
-/* ---------- OPENING ---------- */
 const opening = document.getElementById("opening");
 const heart = document.getElementById("heart");
-const menuContainer = document.getElementById("menu-container");
-const content = document.getElementById("content");
-const contentInner = document.getElementById("content-inner");
-const backBtn = document.getElementById("back");
+const container = document.getElementById("three-container");
 
-/* HEART CLICK FIX */
-['click','touchstart'].forEach(evt=>{
-  heart.addEventListener(evt, e=>{
-    e.preventDefault();
-    opening.remove(); // 🔥 HAPUS TOTAL OPENING
-menuContainer.classList.remove("hidden");
-document.body.style.background = "linear-gradient(135deg,#ff9a9e,#ff2f92,#ff7a18)";
-init3DMenu();
-  }, {once:true});
-});
+let scene, camera, renderer;
+let sprites = [];
+let rotX = 0, rotY = 0;
+let dragging = false;
+let lx = 0, ly = 0;
 
-/* ---------- PARTICLES ---------- */
-setInterval(()=>{
-  const s=document.createElement("span");
-  s.innerHTML="💜";
-  s.style.left=Math.random()*100+"vw";
-  s.style.fontSize=(12+Math.random()*20)+"px";
-  s.style.animationDuration=(6+Math.random()*6)+"s";
-  document.getElementById("bg-particles").appendChild(s);
-  setTimeout(()=>s.remove(),12000);
-},600);
-
-/* ---------- THREE.JS MENU ---------- */
-let scene,camera,renderer,group;
-let isDrag=false,lastX=0,lastY=0,rotX=0,rotY=0;
-
-function init3DMenu(){
-  scene=new THREE.Scene();
-
-  camera=new THREE.PerspectiveCamera(70,innerWidth/innerHeight,0.1,1000);
-  camera.position.z=6;
-
-  renderer=new THREE.WebGLRenderer({alpha:true,antialias:true});
-  renderer.setSize(innerWidth,innerHeight);
-  renderer.setClearColor(0x000000, 0);
-  menuContainer.appendChild(renderer.domElement);
-
-  group=new THREE.Group();
-
- const menuItems = [
-  { name:"Surat", icon:"icon-surat.png" },
-  { name:"Video", icon:"icon-video.png" },
-  { name:"Foto", icon:"icon-foto.png" },
-  { name:"Hadiah", icon:"icon-hadiah.png" },
-  { name:"Musik", icon:"icon-music.png" }
-];
-
-const radius = 3;
-const sprites = [];
-
-const loader = new THREE.TextureLoader();
-
-menuItems.forEach((item, i) => {
-  const texture = loader.load(item.icon);
-
-  const material = new THREE.SpriteMaterial({
-    map: texture,
-    transparent:true
-  });
-
-  const sprite = new THREE.Sprite(material);
-  const angle = (i / menuItems.length) * Math.PI * 2;
-
-  sprite.position.set(
-    Math.cos(angle) * radius,
-    Math.sin(angle) * radius * 0.6,
-    Math.sin(angle) * radius
-  );
-
-  sprite.scale.set(1.2,1.2,1.2);
-  sprite.userData = { menu:item.name };
-
-  scene.add(sprite);
-  sprites.push(sprite);
-});
-
-  menus.forEach((m,i)=>{
-    const angle=(i/menus.length)*Math.PI*2;
-    const geo=new THREE.SphereGeometry(0.35,32,32);
-    const mat=new THREE.MeshStandardMaterial({color:0xff4ecd});
-    const mesh=new THREE.Mesh(geo,mat);
-    mesh.position.set(
-      Math.cos(angle)*radius,
-      Math.sin(angle)*radius,
-      0
-    );
-    mesh.userData=m;
-    group.add(mesh);
-  });
-
-  scene.add(group);
-
-  const light=new THREE.PointLight(0xffffff,1);
-  light.position.set(5,5,5);
-  scene.add(light);
-
+heart.onclick = () => {
+  opening.style.display = "none";
+  initThree();
   animate();
+  startFlowers();
+};
+
+/* ================= THREE INIT ================= */
+function initThree(){
+  scene = new THREE.Scene();
+
+  camera = new THREE.PerspectiveCamera(
+    60,
+    window.innerWidth / window.innerHeight,
+    0.1,
+    100
+  );
+  camera.position.z = 8;
+
+  renderer = new THREE.WebGLRenderer({alpha:true, antialias:true});
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  container.appendChild(renderer.domElement);
+
+  const icons = [
+    "icon-surat.png",
+    "icon-video.png",
+    "icon-foto.png",
+    "icon-hadiah.png",
+    "icon-music.png"
+  ];
+
+  const loader = new THREE.TextureLoader();
+  const radius = 3;
+
+  icons.forEach((icon, i)=>{
+    const mat = new THREE.SpriteMaterial({
+      map: loader.load(icon),
+      transparent:true
+    });
+
+    const sp = new THREE.Sprite(mat);
+    const a = (i/icons.length)*Math.PI*2;
+
+    sp.position.set(
+      Math.cos(a)*radius,
+      Math.sin(a)*radius*0.6,
+      Math.sin(a)*radius
+    );
+
+    sp.scale.set(1.5,1.5,1.5);
+    scene.add(sp);
+    sprites.push(sp);
+  });
+
+  /* DRAG ROTATION */
+  window.addEventListener("mousedown",e=>{
+    dragging=true; lx=e.clientX; ly=e.clientY;
+  });
+  window.addEventListener("mouseup",()=>dragging=false);
+  window.addEventListener("mousemove",e=>{
+    if(!dragging) return;
+    rotY += (e.clientX-lx)*0.005;
+    rotX += (e.clientY-ly)*0.005;
+    lx=e.clientX; ly=e.clientY;
+  });
+
+  window.addEventListener("resize",()=>{
+    camera.aspect = window.innerWidth/window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth,window.innerHeight);
+  });
 }
 
-/* RENDER */
+/* ================= ANIMATE ================= */
 function animate(){
   requestAnimationFrame(animate);
+
+  sprites.forEach(sp=>{
+    const x = sp.position.x;
+    const z = sp.position.z;
+    sp.position.x = x*Math.cos(rotY)-z*Math.sin(rotY);
+    sp.position.z = x*Math.sin(rotY)+z*Math.cos(rotY);
+  });
+
   renderer.render(scene,camera);
 }
 
-/* DRAG ROTATION */
-menuContainer.addEventListener("mousedown",e=>{
-  isDrag=true; lastX=e.clientX; lastY=e.clientY;
-});
-window.addEventListener("mouseup",()=>isDrag=false);
-window.addEventListener("mousemove",e=>{
-  if(!isDrag) return;
-  rotY+=(e.clientX-lastX)*0.005;
-  rotX+=(e.clientY-lastY)*0.005;
-  group.rotation.set(rotX,rotY,0);
-  lastX=e.clientX; lastY=e.clientY;
-});
-
-/* CLICK MENU */
-menuContainer.addEventListener("click",e=>{
-  const mouse=new THREE.Vector2(
-    (e.clientX/innerWidth)*2-1,
-    -(e.clientY/innerHeight)*2+1
-  );
-  const ray=new THREE.Raycaster();
-  ray.setFromCamera(mouse,camera);
-  const hit=ray.intersectObjects(group.children);
-  if(hit.length){
-    openMenu(hit[0].object.userData.id);
-  }
-});
-
-/* ---------- CONTENT ---------- */
-function openMenu(id){
-  menuContainer.classList.add("hidden");
-  content.classList.remove("hidden");
-
-  const data={
-    surat:"<h2>💌 Surat</h2><p>Aku membuat ini karena kamu spesial.</p>",
-    galeri:"<h2>📷 Galeri</h2><p>Isi dengan foto kenangan.</p>",
-    video:"<h2>🎥 Video</h2><p>Tempat video spesial.</p>",
-    hadiah:"<h2>🎁 Hadiah</h2><p>Hadiah kecil penuh makna.</p>",
-    lagu:"<h2>🎶 Lagu</h2><p>Lagu kita berdua.</p>",
-    about:"<h2>💜 Tentang Kita</h2><p>Cerita perjalanan kita.</p>"
-  };
-
-  contentInner.innerHTML=data[id];
+/* ================= FLOWERS ================= */
+function startFlowers(){
+  setInterval(()=>{
+    const f=document.createElement("div");
+    f.innerHTML=["🌸","💮","🌷"][Math.floor(Math.random()*3)];
+    f.style.position="fixed";
+    f.style.left=Math.random()*100+"vw";
+    f.style.top="-30px";
+    f.style.fontSize="22px";
+    f.style.animation="fall 6s linear";
+    document.body.appendChild(f);
+    setTimeout(()=>f.remove(),6000);
+  },500);
 }
 
-/* BACK */
-backBtn.onclick=()=>{
-  content.classList.add("hidden");
-  menuContainer.classList.remove("hidden");
-};
+const style=document.createElement("style");
+style.innerHTML=`
+@keyframes fall{
+  to{transform:translateY(110vh) rotate(360deg);opacity:0}
+}`;
+document.head.appendChild(style);
