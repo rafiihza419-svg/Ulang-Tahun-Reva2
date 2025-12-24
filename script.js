@@ -10,9 +10,10 @@ const backBtn = document.getElementById("back");
 ['click','touchstart'].forEach(evt=>{
   heart.addEventListener(evt, e=>{
     e.preventDefault();
-    opening.style.display="none";
-    menuContainer.classList.remove("hidden");
-    init3DMenu();
+    opening.remove(); // 🔥 HAPUS TOTAL OPENING
+menuContainer.classList.remove("hidden");
+document.body.style.background = "linear-gradient(135deg,#2d004d,#ff4ecd)";
+init3DMenu();
   }, {once:true});
 });
 
