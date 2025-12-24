@@ -8,11 +8,21 @@ const backBtn = document.getElementById("back");
 let scene, camera, renderer, controls;
 
 /* OPENING */
-heart.onclick = ()=>{
-  opening.style.display="none";
-  sceneContainer.classList.remove("hidden");
-  init3D();
-};
+['click','touchstart'].forEach(evt=>{
+  heart.addEventListener(evt, (e)=>{
+    e.preventDefault();
+    e.stopPropagation();
+
+    opening.style.opacity = "0";
+    opening.style.pointerEvents = "none";
+
+    setTimeout(()=>{
+      opening.style.display = "none";
+      sceneContainer.classList.remove("hidden");
+      init3D();
+    },500);
+  }, { once:true });
+});
 
 /* INIT THREE */
 function init3D(){
