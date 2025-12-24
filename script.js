@@ -1,122 +1,149 @@
-document.addEventListener('DOMContentLoaded',()=>{
+const opening = document.getElementById("opening");
+const heart = document.getElementById("heart");
+const sceneContainer = document.getElementById("scene-container");
+const content = document.getElementById("content");
+const contentInner = document.getElementById("content-inner");
+const backBtn = document.getElementById("back");
 
-const opening=document.getElementById('opening-overlay');
-const heart=document.getElementById('heart-logo');
-const menuOrbit=document.getElementById('menu-orbit');
-const content=document.getElementById('content');
-const items=document.querySelectorAll('.menu-item');
-const ambient=document.getElementById('ambient-music');
-const bg=document.getElementById('bg-music');
+let scene, camera, renderer, controls;
 
 /* OPENING */
-ambient.volume=0.3;
-ambient.play().catch(()=>{});
+heart.onclick = ()=>{
+  opening.style.display="none";
+  sceneContainer.classList.remove("hidden");
+  init3D();
+};
 
-heart.addEventListener('click',()=>{
-  opening.style.opacity=0;
-  ambient.pause();
-  bg.play().catch(()=>{});
-  setTimeout(()=>{
-    opening.style.display='none';
-    menuOrbit.classList.remove('hidden');
-  },1200);
-},{once:true});
+/* INIT THREE */
+function init3D(){
+  scene = new THREE.Scene();
 
-/* MENU POSITION (LINGKARAN) */
-const radius=160;
-items.forEach((item,i)=>{
-  const angle=(i/items.length)*Math.PI*2;
-  const x=Math.cos(angle)*radius;
-  const y=Math.sin(angle)*radius;
-  const z=Math.sin(angle)*40;
-  item.style.transform=`translate3d(${x}px,${y}px,${z}px)`;
-});
+  camera = new THREE.PerspectiveCamera(
+    60,
+    window.innerWidth/window.innerHeight,
+    0.1,
+    1000
+  );
+  camera.position.z = 5;
 
-/* MANUAL ROTATE */
-let drag=false,lx=0,ly=0,rx=0,ry=0;
+  renderer = new THREE.WebGLRenderer({alpha:true, antialias:true});
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  sceneContainer.appendChild(renderer.domElement);
 
-menuOrbit.addEventListener('mousedown',e=>{
-  drag=true; lx=e.clientX; ly=e.clientY;
-});
-window.addEventListener('mouseup',()=>drag=false);
-window.addEventListener('mousemove',e=>{
-  if(!drag)return;
-  ry+=(e.clientX-lx)*0.25;
-  rx-=(e.clientY-ly)*0.25;
-  menuOrbit.style.transform=
-    `translate(-50%,-50%) rotateX(${rx}deg) rotateY(${ry}deg)`;
-  lx=e.clientX; ly=e.clientY;
-});
+  controls = new THREE.OrbitControls(camera, renderer.domElement);
+  controls.enableZoom = false;
+  controls.enablePan = false;
+  controls.autoRotate = false;
 
-/* MENU CLICK */
-items.forEach(item=>{
-  item.onclick=()=>openMenu(item.dataset.menu);
-});
+  /* LIGHT */
+  const light = new THREE.PointLight(0xffffff,1);
+  light.position.set(10,10,10);
+  scene.add(light);
 
-function openMenu(menu){
-  menuOrbit.classList.add('hidden');
-  content.classList.remove('hidden');
+  /* SPHERE */
+  const sphereGeo = new THREE.SphereGeometry(2,32,32);
+  const sphereMat = new THREE.MeshStandardMaterial({
+    color:0x8e44ad,
+    wireframe:true,
+    transparent:true,
+    opacity:0.3
+  });
+  const sphere = new THREE.Mesh(sphereGeo,sphereMat);
+  scene.add(sphere);
 
-  let html=`<button id="back-btn">← Kembali</button><div class="fade-in">`;
+  /* MENU ITEMS */
+  const menus = [
+    {name:"Surat", text:"💌 Surat"},
+    {name:"Galeri", text:"📷 Galeri"},
+    {name:"Video", text:"🎥 Video"},
+    {name:"Hadiah", text:"🎁 Hadiah"},
+    {name:"Bunga", text:"🌸 Bunga"},
+    {name:"Secret", text:"🔐 Secret"}
+  ];
 
-  if(menu==='surat'){
-    html+=`<h2>💌 Surat</h2>
-    <p>Sejak awal perjalanan ini, aku tahu kamu adalah rumah yang selalu ingin aku tuju.</p>`;
-  }
-  if(menu==='galeri'){
-    html+=`
-    <h2>📷 Galeri</h2>
-    <div class="gallery">
-      <img src="assets/photo1.jpg">
-      <img src="assets/photo2.jpg">
-      <img src="assets/photo3.jpg">
-      <img src="assets/photo4.jpg">
-      <img src="assets/photo5.jpg">
-      <img src="assets/photo6.jpg">
-    </div>`;
-  }
-  if(menu==='video'){
-    html+=`<h2>🎥 Video</h2>
-    <video controls width="90%">
-      <source src="assets/video.mp4" type="video/mp4">
-    </video>`;
-  }
-  if(menu==='hadiah'){
-    html+=`<h2>🎁 Hadiah Kecil</h2>
-    <p>Hadiah ini sederhana, tapi perasaanku ke kamu luar biasa 💖</p>`;
-  }
-  if(menu==='bunga'){
-    html+=`<h2>🌸 Bunga</h2>
-    <p>Bunga ini akan selalu mekar untukmu 🌷</p>`;
-  }
-  if(menu==='secret'){
-    const p=prompt('Password?');
-    html+= p==='tanggaljadian'
-      ? `<h2>🔐 Rahasia</h2><p>Aku mencintaimu tanpa syarat.</p>`
-      : `<p>Password salah.</p>`;
-  }
+  menus.forEach((m,i)=>{
+    const sprite = createLabel(m.text);
+    const phi = Math.acos(-1 + (2*i)/menus.length);
+    const theta = Math.sqrt(menus.length*Math.PI)*phi;
 
-  html+=`</div>`;
-  content.innerHTML=html;
-  document.getElementById('back-btn').onclick=back;
+    sprite.position.setFromSphericalCoords(2,phi,theta);
+    sprite.userData = m;
+    scene.add(sprite);
+  });
+
+  animate();
 }
 
-function back(){
-  content.classList.add('hidden');
-  content.innerHTML='';
-  menuOrbit.classList.remove('hidden');
+/* LABEL */
+function createLabel(text){
+  const div = document.createElement("div");
+  div.className="menu-label";
+  div.innerHTML=text;
+
+  const texture = new THREE.CanvasTexture(htmlToCanvas(div));
+  const material = new THREE.SpriteMaterial({map:texture});
+  const sprite = new THREE.Sprite(material);
+  sprite.scale.set(1.5,0.6,1);
+  sprite.onClick = ()=>openMenu(text);
+  return sprite;
 }
 
+/* HTML to Canvas */
+function htmlToCanvas(el){
+  const canvas = document.createElement("canvas");
+  canvas.width=256;
+  canvas.height=128;
+  const ctx = canvas.getContext("2d");
+  ctx.fillStyle="#fff";
+  ctx.fillRect(0,0,256,128);
+  ctx.fillStyle="#000";
+  ctx.font="24px sans-serif";
+  ctx.textAlign="center";
+  ctx.textBaseline="middle";
+  ctx.fillText(el.innerText,128,64);
+  return canvas;
+}
+
+/* CLICK DETECTION */
+const raycaster = new THREE.Raycaster();
+const mouse = new THREE.Vector2();
+
+window.addEventListener("click",e=>{
+  mouse.x = (e.clientX/window.innerWidth)*2-1;
+  mouse.y = -(e.clientY/window.innerHeight)*2+1;
+  raycaster.setFromCamera(mouse,camera);
+  const intersects = raycaster.intersectObjects(scene.children);
+  if(intersects.length){
+    const obj = intersects[0].object;
+    if(obj.userData?.name){
+      openMenu(obj.userData.name);
+    }
+  }
 });
 
-['click','touchstart'].forEach(evt=>{
-  heartLogo.addEventListener(evt, ()=>{
-    openingOverlay.style.opacity = '0';
-    openingOverlay.style.pointerEvents = 'none';
+/* OPEN MENU */
+function openMenu(name){
+  sceneContainer.classList.add("hidden");
+  content.classList.remove("hidden");
+  contentInner.innerHTML = `<h1>${name}</h1><p>Isi menu ${name}</p>`;
+}
 
-    setTimeout(()=>{
-      openingOverlay.style.display = 'none';
-      menuOrbit.classList.remove('hidden');
-    },1000);
-  }, { once:true });
-});
+/* BACK */
+backBtn.onclick = ()=>{
+  content.classList.add("hidden");
+  sceneContainer.classList.remove("hidden");
+};
+
+/* ANIMATE */
+function animate(){
+  requestAnimationFrame(animate);
+  controls.update();
+  renderer.render(scene,camera);
+}
+
+/* RESIZE */
+window.onresize=()=>{
+  camera.aspect=window.innerWidth/window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth,window.innerHeight);
+};
