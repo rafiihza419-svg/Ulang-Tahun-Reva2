@@ -308,3 +308,47 @@ body {
     20%{opacity:1}
     100%{transform:translateY(-10vh) scale(1.2); opacity:0}
 }
+
+#section{
+    position:fixed;
+    inset:0;
+    background:radial-gradient(circle at top,#2d1b69,#000);
+    color:white;
+    padding:40px 20px;
+    z-index:3000;
+    overflow:auto;
+}
+
+#backBtn{
+    position:fixed;
+    top:20px;
+    left:20px;
+    background:rgba(255,255,255,.2);
+    border:none;
+    color:white;
+    padding:8px 18px;
+    border-radius:20px;
+    cursor:pointer;
+}
+
+.firework{
+    position:fixed;
+    font-size:24px;
+    animation:boom 2s ease-out forwards;
+}
+
+@keyframes boom{
+    0%{transform:scale(0);opacity:1}
+    100%{transform:scale(3);opacity:0}
+}
+
+#birthdayText{
+    position:fixed;
+    inset:0;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:3em;
+    color:#ffb3ff;
+    animation:fadeIn 3s forwards;
+}
