@@ -20,11 +20,32 @@ heart.onclick = () => {
 
 };
 
-function createBallTexture(icon, bgColor) {
-    const canvas = document.createElement("canvas");
-    canvas.width = 256;
-    canvas.height = 256;
-    const ctx = canvas.getContext("2d");
+// === Logo kecil di depan bola ===
+const canvas = document.createElement("canvas");
+canvas.width = 128;
+canvas.height = 128;
+const ctx = canvas.getContext("2d");
+
+ctx.font = "72px Arial";
+ctx.textAlign = "center";
+ctx.textBaseline = "middle";
+ctx.fillStyle = "#fff";
+ctx.fillText(m.icon, 64, 80);
+
+const texture = new THREE.CanvasTexture(canvas);
+const logoMat = new THREE.MeshBasicMaterial({
+    map: texture,
+    transparent: true
+});
+
+const logo = new THREE.Mesh(
+    new THREE.PlaneGeometry(1, 1),
+    logoMat
+);
+
+// posisikan di DEPAN bola
+logo.position.set(0, 0, 1.95);
+ball.add(logo);
 
     // background
     ctx.fillStyle = bgColor;
@@ -81,16 +102,24 @@ function initThree() {
         const phi = Math.acos(-1 + (2 * i) / menus.length);
         const theta = Math.sqrt(menus.length * Math.PI) * phi;
 
-        const texture = createBallTexture(m.icon, m.color);
-
         const ball = new THREE.Mesh(
-            new THREE.SphereGeometry(1.9, 48, 48),
-            new THREE.MeshStandardMaterial({
-                map: texture,
-                roughness: 0.25,
-                metalness: 0.35
-            })
-        );
+    new THREE.SphereGeometry(1.9, 48, 48),
+    new THREE.MeshStandardMaterial({
+        color: m.color,
+        roughness: 0.3,
+        metalness: 0.25
+    })
+);
+
+    ball.position.set(
+        radius * Math.cos(theta) * Math.sin(phi),
+        radius * Math.sin(theta) * Math.sin(phi),
+        radius * Math.cos(phi)
+);
+
+    ball.userData = m;
+    menuGroup.add(ball);
+
 
         ball.position.set(
             radius * Math.cos(theta) * Math.sin(phi),
