@@ -3,15 +3,14 @@
 body { 
     margin: 0; 
     overflow: hidden;
-    /* Background Gradasi Orange - Pink */
-    background: linear-gradient(135deg, #ff9a9e 0%, #ffc3a0 100%);
+    background: linear-gradient(135deg, #ff9a9e, #ffc3a0); /* Orange-Pink */
     font-family: 'Segoe UI', sans-serif; 
 }
 
 #opening {
     position: fixed;
     inset: 0;
-    background: #fff5f7; /* Putih cerah ambient */
+    background: #fff5f7; /* Cerah Ambient */
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -21,22 +20,22 @@ body {
 }
 
 #heart {
-    font-size: 120px;
+    font-size: 100px;
     cursor: pointer;
-    filter: drop-shadow(0 0 20px #ffb6c1);
+    filter: drop-shadow(0 0 15px #ffb6c1);
     animation: pulse 1.2s infinite ease-in-out;
 }
 
 @keyframes pulse {
     0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.2); }
+    50% { transform: scale(1.15); }
 }
 
-#opening p { color: #ff4d6d; margin-top: 20px; font-weight: bold; letter-spacing: 2px; }
+#opening p { color: #ff4d6d; margin-top: 15px; font-weight: bold; letter-spacing: 2px; }
 
-#three-container { position: fixed; inset: 0; z-index: 10; }
+#three-container { position: fixed; inset: 0; z-index: 10; cursor: grab; }
+#three-container:active { cursor: grabbing; }
 
-/* Modal Content */
 #modal {
     position: fixed;
     inset: 0;
@@ -44,46 +43,44 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    background: rgba(0,0,0,0.3);
-    backdrop-filter: blur(10px);
+    background: rgba(0,0,0,0.2);
+    backdrop-filter: blur(8px);
 }
 
 .glass-card {
-    background: rgba(255, 255, 255, 0.4);
-    padding: 25px;
-    border-radius: 20px;
-    border: 1px solid rgba(255, 255, 255, 0.6);
+    background: rgba(255, 255, 255, 0.6);
+    padding: 30px;
+    border-radius: 25px;
+    border: 1px solid rgba(255, 255, 255, 0.8);
     width: 85%;
     max-width: 400px;
     text-align: center;
-    color: #444;
+    position: relative;
 }
 
 .hidden { display: none !important; }
 
 #close-modal {
-    float: right;
+    position: absolute;
+    top: 10px; right: 15px;
     background: none; border: none;
-    font-size: 24px; cursor: pointer; color: #ff2f92;
+    font-size: 28px; cursor: pointer; color: #ff4d6d;
 }
 
 /* Grid Foto 3x2 */
 .photo-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(2, 1fr);
-    gap: 8px;
-    margin-top: 15px;
+    gap: 10px;
+    margin-top: 20px;
 }
-
 .photo-item {
     background: #ffd1dc;
     aspect-ratio: 1;
-    border-radius: 8px;
+    border-radius: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 10px;
     color: #ff4d6d;
-    font-weight: bold;
 }
