@@ -3,10 +3,12 @@
 body { 
     margin: 0; 
     overflow: hidden; 
-    background: #0b0014; 
-    font-family: 'Segoe UI', sans-serif; 
+    /* Gradient Pink-Orange sesuai permintaanmu */
+    background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 30%, #ffd1ff 60%, #ffc3a0 100%); 
+    font-family: 'Segoe UI', Tahoma, sans-serif; 
 }
 
+/* Opening Screen */
 #opening {
     position: fixed;
     inset: 0;
@@ -15,14 +17,15 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    z-index: 100;
+    z-index: 1000;
+    transition: opacity 1s ease;
 }
 
 #heart {
-    font-size: 80px;
+    font-size: 100px;
     cursor: pointer;
     animation: pulse 1.5s infinite;
-    user-select: none;
+    filter: drop-shadow(0 0 20px #ff00ff);
 }
 
 @keyframes pulse {
@@ -30,48 +33,55 @@ body {
     50% { transform: scale(1.2); }
 }
 
-#opening p { color: #fff; margin-top: 15px; letter-spacing: 2px; }
+#opening p { color: white; margin-top: 20px; letter-spacing: 5px; font-weight: bold; }
 
-#three-container { width: 100%; height: 100vh; outline: none; }
+/* Menu 3D Container */
+#three-container { width: 100%; height: 100vh; position: fixed; top: 0; }
 
+/* Content Overlay */
 #content {
     position: fixed;
     inset: 0;
-    background: rgba(45, 0, 77, 0.9);
-    z-index: 200;
-    padding: 40px;
-    color: white;
+    z-index: 500;
     display: flex;
-    flex-direction: column;
-    align-items: center;
     justify-content: center;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(5px);
+}
+
+.glass-card {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 40px;
+    border-radius: 30px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
     text-align: center;
+    color: white;
+    width: 80%;
+    max-width: 400px;
 }
 
 .hidden { display: none !important; }
 
 #back {
-    position: absolute;
-    top: 20px;
-    left: 20px;
-    background: #fff;
+    background: white;
+    color: #ff2f92;
     border: none;
-    padding: 10px 20px;
-    border-radius: 20px;
+    padding: 8px 15px;
+    border-radius: 15px;
     cursor: pointer;
+    margin-bottom: 20px;
+    font-weight: bold;
 }
 
-/* Animasi Partikel */
-.falling-flower, .heart-particle {
+/* Partikel */
+.falling-flower {
     position: fixed;
     pointer-events: none;
-    z-index: 50;
+    z-index: 100;
 }
 
 @keyframes fall {
     to { transform: translateY(110vh) rotate(360deg); opacity: 0; }
-}
-
-@keyframes floatUp {
-    to { transform: translateY(-110vh); opacity: 0; }
 }
