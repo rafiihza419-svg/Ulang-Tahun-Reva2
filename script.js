@@ -50,7 +50,7 @@ function initThree() {
         { name: "Kejutan", val: "BOOM 🎆" }
     ];
 
-    const radius = 3.5;
+    const radius = 7.5;
 
     menus.forEach((m, i) => {
         const phi = Math.acos(-1 + (2 * i) / menus.length);
