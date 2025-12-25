@@ -95,11 +95,11 @@ function initThree() {
 
     const menus = [
         { name: "Hadiah", icon: "❤️", color: "#ff6b6b", val: "Kejutan spesial menantimu! 💖" },
-        { name: "Surat", icon: "💙", color: "##ff6b6b", val: "Terima kasih sudah selalu ada." },
-        { name: "Video", icon: "🤍", color: "##ff6b6b", val: "Momen kita adalah film terbaik." },
-        { name: "Foto", icon: "💛", color: "##ff6b6b", type: "photo" },
-        { name: "Rahasia", icon: "💚", color: "##ff6b6b", val: "Jadi mau official kapan?" },
-        { name: "Kejutan", icon: "🧡", color: "##ff6b6b", type: "surprise" }
+        { name: "Surat", icon: "💙", color: "#ff6b6b", val: "Terima kasih sudah selalu ada." },
+        { name: "Video", icon: "🤍", color: "#ff6b6b", val: "Momen kita adalah film terbaik." },
+        { name: "Foto", icon: "💛", color: "#ff6b6b", type: "photo" },
+        { name: "Rahasia", icon: "💚", color: "#ff6b6b", val: "Jadi mau official kapan?" },
+        { name: "Kejutan", icon: "🧡", color: "#ff6b6b", type: "surprise" }
     ];
 
     const radius = 7.5;
