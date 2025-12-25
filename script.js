@@ -16,6 +16,8 @@ heart.onclick = () => {
         animate();
         startFallingParticles();
     }, 800);
+        create3DFlowers();
+
 };
 
 function createBallTexture(icon, bgColor) {
@@ -125,6 +127,25 @@ function initThree() {
     });
 }
 
+window.addEventListener("mousemove", e => {
+    mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+    raycaster.setFromCamera(mouse, camera);
+
+    const hits = raycaster.intersectObjects(menuGroup.children);
+
+    menuGroup.children.forEach(b => {
+        b.scale.lerp(new THREE.Vector3(1,1,1), 0.1);
+    });
+
+    if (hits.length) {
+        hits[0].object.scale.lerp(
+            new THREE.Vector3(1.25,1.25,1.25),
+            0.15
+        );
+    }
+});
+
 function openMenu(data) {
     let html = `<h3>${data.name}</h3><br>`;
     if (data.type === "photo") {
@@ -134,6 +155,48 @@ function openMenu(data) {
     } else if (data.type === "surprise") {
         html += `<p>BOOM! 🎆</p>`;
         createFireworks();
+function create3DFlowers() {
+    const emojis = ["🌸", "🌺", "💮"];
+    for (let i = 0; i < 25; i++) {
+        const canvas = document.createElement("canvas");
+        canvas.width = 128;
+        canvas.height = 128;
+        const ctx = canvas.getContext("2d");
+
+        ctx.font = "90px Arial";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(
+            emojis[Math.floor(Math.random() * emojis.length)],
+            64,
+            80
+        );
+
+        const texture = new THREE.CanvasTexture(canvas);
+        const mat = new THREE.SpriteMaterial({ map: texture, transparent: true });
+        const sprite = new THREE.Sprite(mat);
+
+        sprite.position.set(
+            (Math.random() - 0.5) * 18,
+            Math.random() * 12 - 6,
+            (Math.random() - 0.5) * 18
+        );
+
+        sprite.scale.set(2, 2, 1);
+        scene.add(sprite);
+
+        const speed = Math.random() * 0.01 + 0.003;
+
+        function animateFlower() {
+            sprite.position.y -= speed;
+            sprite.rotation.z += 0.002;
+            if (sprite.position.y < -10) sprite.position.y = 10;
+            requestAnimationFrame(animateFlower);
+        }
+        animateFlower();
+    }
+}
+
     } else {
         html += `<p style="font-size:18px;font-weight:bold">${data.val}</p>`;
     }
