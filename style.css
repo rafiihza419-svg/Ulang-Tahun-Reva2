@@ -17,6 +17,7 @@ body {
 
 /* OPENING */
 #opening {
+    pointer-events: auto;
     position: fixed;
     inset: 0;
     background: radial-gradient(circle, #ffe0f0, #ff9acb);
@@ -31,6 +32,8 @@ body {
     font-size: 100px;
     cursor: pointer;
     animation: heartbeat 1.2s infinite;
+    pointer-events: auto;
+    z-index: 2000;
 }
 
 @keyframes heartbeat {
