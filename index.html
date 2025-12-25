@@ -1,39 +1,272 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Special for You ❤️</title>
-<link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Special Surprise</title>
+    <style>
+        /* Global Styles */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        
+        body {
+            overflow: hidden;
+            background: linear-gradient(45deg, #ff9a9e, #fad0c4, #fad0c4);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #d63384;
+        }
+
+        .screen {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            display: flex; justify-content: center; align-items: center;
+            flex-direction: column;
+            transition: opacity 0.5s ease-in-out;
+            visibility: hidden;
+            opacity: 0;
+            z-index: 1;
+        }
+
+        .active { visibility: visible; opacity: 1; z-index: 10; }
+
+        /* --- SCREEN 1: HEART --- */
+        #home { visibility: visible; opacity: 1; }
+        
+        .heart {
+            font-size: 100px;
+            color: #ff0000;
+            cursor: pointer;
+            filter: drop-shadow(0 0 10px rgba(255, 0, 0, 0.5));
+            animation: beat 0.8s infinite alternate ease-in-out;
+            transition: transform 0.3s;
+        }
+
+        @keyframes beat {
+            from { transform: scale(1); }
+            to { transform: scale(1.2); }
+        }
+
+        /* --- SCREEN 2: MENU --- */
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            z-index: 20;
+        }
+
+        .menu-item {
+            width: 120px;
+            height: 120px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            font-weight: bold;
+            transition: 0.3s;
+            text-align: center;
+            padding: 10px;
+        }
+
+        .menu-item:hover { transform: scale(1.05); background: #fff; }
+
+        /* --- SUB-PAGES --- */
+        .content-box {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            border-radius: 20px;
+            max-width: 90%;
+            max-height: 80%;
+            overflow-y: auto;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .btn-back {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: #ff758c;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+
+        /* PHOTO COLLAGE 3x2 */
+        .collage {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+        .collage img { width: 100%; border-radius: 10px; }
+
+        /* PARTICLES */
+        .particle {
+            position: absolute;
+            top: -20px;
+            pointer-events: none;
+            animation: fall linear infinite;
+        }
+
+        @keyframes fall {
+            to { transform: translateY(100vh) rotate(360deg); }
+        }
+
+        /* FIREWORKS CANVAS */
+        #fwCanvas { position: absolute; top: 0; left: 0; pointer-events: none; }
+
+    </style>
 </head>
 <body>
 
-<!-- OPENING -->
-<section id="opening">
-  <div id="heart">❤️</div>
-  <p>TAP UNTUK MEMBUKA</p>
-</section>
+    <div id="particle-container"></div>
 
-<!-- MENU -->
-<section id="menu" class="hidden">
-  <div class="particles"></div>
+    <div id="home" class="screen">
+        <div class="heart" onclick="goTo('menu')">❤️</div>
+        <p style="margin-top: 20px; font-weight: 300;">Click the heart</p>
+    </div>
 
-  <div class="menu-grid">
-    <button onclick="openPage('foto')">📸<span>Foto</span></button>
-    <button onclick="openPage('video')">🎥<span>Video</span></button>
-    <button onclick="openPage('hadiah')">🎁<span>Hadiah</span></button>
-    <button onclick="openPage('pesan')">💌<span>Pesan</span></button>
-    <button onclick="openPage('kejutan')">🎆<span>Kejutan</span></button>
-    <button onclick="openPage('secret')">🔒<span>Secret</span></button>
-  </div>
-</section>
+    <div id="menu" class="screen">
+        <h2 style="margin-bottom: 30px;">For You ✨</h2>
+        <div class="menu-grid">
+            <div class="menu-item" onclick="goTo('page-foto')">Foto</div>
+            <div class="menu-item" onclick="goTo('page-video')">Video</div>
+            <div class="menu-item" onclick="goTo('page-hadiah')">Hadiah</div>
+            <div class="menu-item" onclick="goTo('page-pesan')">Pesan</div>
+            <div class="menu-item" onclick="goTo('page-kejutan'); startFireworks();">Kejutan</div>
+            <div class="menu-item" onclick="goTo('page-secret')">Secret</div>
+        </div>
+    </div>
 
-<!-- PAGE -->
-<section id="page" class="hidden">
-  <button class="back" onclick="backMenu()">← Kembali</button>
-  <div id="content"></div>
-</section>
+    <div id="page-foto" class="screen">
+        <div class="content-box">
+            <h3>Our Memories</h3><br>
+            <div class="collage">
+                <img src="https://via.placeholder.com/150" alt="1">
+                <img src="https://via.placeholder.com/150" alt="2">
+                <img src="https://via.placeholder.com/150" alt="3">
+                <img src="https://via.placeholder.com/150" alt="4">
+                <img src="https://via.placeholder.com/150" alt="5">
+                <img src="https://via.placeholder.com/150" alt="6">
+            </div>
+            <button class="btn-back" onclick="goTo('menu')">Back</button>
+        </div>
+    </div>
 
-<script src="script.js"></script>
+    <div id="page-video" class="screen">
+        <div class="content-box">
+            <h3>Special Video</h3><br>
+            <video width="100%" controls style="border-radius:10px; margin-bottom:10px;">
+                <source src="your-video1.mp4" type="video/mp4">
+            </video>
+            <video width="100%" controls style="border-radius:10px;">
+                <source src="your-video2.mp4" type="video/mp4">
+            </video>
+            <button class="btn-back" onclick="goTo('menu')">Back</button>
+        </div>
+    </div>
+
+    <div id="page-hadiah" class="screen">
+        <div class="content-box">
+            <h3>Happy Birthday! 🎂</h3>
+            <p style="font-size: 24px; margin: 20px 0;">🎁</p>
+            <p>Selamat ulang tahun! Semoga harimu seindah senyummu.</p>
+            <button class="btn-back" onclick="goTo('menu')">Back</button>
+        </div>
+    </div>
+
+    <div id="page-pesan" class="screen">
+        <div class="content-box">
+            <h3>Message for You</h3>
+            <p style="line-height: 1.6; margin-top: 15px;">
+                "Aku cuma mau bilang terima kasih udah ada di sini. Kamu berharga banget buat aku..."
+            </p>
+            <button class="btn-back" onclick="goTo('menu')">Back</button>
+        </div>
+    </div>
+
+    <div id="page-kejutan" class="screen">
+        <canvas id="fwCanvas"></canvas>
+        <div class="content-box" style="z-index: 100;">
+            <h3>Surprise!!! 🎆</h3>
+            <p>Boom! Hope you like it!</p>
+            <button class="btn-back" onclick="goTo('menu'); stopFireworks();">Back</button>
+        </div>
+    </div>
+
+    <div id="page-secret" class="screen">
+        <div class="content-box">
+            <h3>The Secret.. 🤫</h3>
+            <p style="font-size: 20px; font-weight: bold; margin-top: 20px;">
+                "Jadi kapan mau official?"
+            </p>
+            <button class="btn-back" onclick="goTo('menu')">Back</button>
+        </div>
+    </div>
+
+    <script>
+        // Navigasi
+        function goTo(id) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            
+            // Start/Stop particles only in menu or subpages
+            if(id === 'home') {
+                document.getElementById('particle-container').innerHTML = '';
+            } else if(id === 'menu') {
+                createParticles();
+            }
+        }
+
+        // Efek Kelopak Bunga & Hati Jatuh
+        function createParticles() {
+            const container = document.getElementById('particle-container');
+            if(container.children.length > 0) return;
+            
+            const emojis = ['🌸', '❤️', '✨', '💖'];
+            for (let i = 0; i < 20; i++) {
+                let p = document.createElement('div');
+                p.className = 'particle';
+                p.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+                p.style.left = Math.random() * 100 + 'vw';
+                p.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                p.style.fontSize = Math.random() * 10 + 15 + 'px';
+                p.style.opacity = Math.random();
+                container.appendChild(p);
+            }
+        }
+
+        // Efek Kembang Api Sederhana
+        const canvas = document.getElementById('fwCanvas');
+        const ctx = canvas.getContext('2d');
+        let fwActive = false;
+
+        function startFireworks() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            fwActive = true;
+            animateFW();
+        }
+
+        function stopFireworks() { fwActive = false; }
+
+        function animateFW() {
+            if(!fwActive) return;
+            ctx.fillStyle = 'rgba(255, 154, 158, 0.2)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            for(let i=0; i<5; i++) {
+                ctx.beginPath();
+                ctx.arc(Math.random()*canvas.width, Math.random()*canvas.height, Math.random()*5, 0, Math.PI*2);
+                ctx.fillStyle = `hsl(${Math.random()*360}, 100%, 50%)`;
+                ctx.fill();
+            }
+            requestAnimationFrame(animateFW);
+        }
+    </script>
 </body>
 </html>
