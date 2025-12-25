@@ -1,16 +1,25 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
-body { 
-    margin: 0; 
+body {
+    margin: 0;
     overflow: hidden;
-    background: linear-gradient(135deg, #ff9a9e 0%, #ffc3a0 100%);
-    font-family: 'Segoe UI', sans-serif; 
+    background: radial-gradient(
+        circle at top,
+        #ffd1e8 0%,
+        #ff9acb 40%,
+        #ff6fae 100%
+    );
+    font-family: 'Segoe UI', sans-serif;
 }
 
 #opening {
     position: fixed;
     inset: 0;
-    background: #fffafa;
+    background: radial-gradient(
+        circle at center,
+        #ffe0f0,
+        #ff9acb
+    );
     display: flex;
     flex-direction: column;
     justify-content: center;
