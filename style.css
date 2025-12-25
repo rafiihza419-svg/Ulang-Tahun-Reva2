@@ -4,19 +4,22 @@
     box-sizing: border-box;
 }
 
-body {
-    overflow: hidden;
-    font-family: 'Segoe UI', sans-serif;
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
     background: radial-gradient(
         circle at top,
         #ffd1e8 0%,
         #ff9acb 40%,
         #ff6fae 100%
     );
+    z-index: 0;
 }
 
 /* OPENING */
 #opening {
+    transition: opacity 0.8s ease;
     pointer-events: auto;
     position: fixed;
     inset: 0;
@@ -55,7 +58,7 @@ body {
 #three-container {
     position: fixed;
     inset: 0;
-    z-index: 10;
+    z-index: 5;
 }
 
 /* FALLING FLOWER */
