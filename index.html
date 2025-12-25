@@ -3,14 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Special Surprise</title>
+    <title>A Special Surprise</title>
     <style>
-        /* Global Styles */
+        /* --- Global Styles --- */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         
         body {
             overflow: hidden;
-            background: linear-gradient(45deg, #ff9a9e, #fad0c4, #fad0c4);
+            /* Gradasi background */
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fad0c4 100%);
             height: 100vh;
             display: flex;
             justify-content: center;
@@ -18,106 +19,149 @@
             color: #d63384;
         }
 
+        /* --- Screen & Transitions --- */
         .screen {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
             display: flex; justify-content: center; align-items: center;
             flex-direction: column;
-            transition: opacity 0.5s ease-in-out;
+            /* Transisi lebih halus dengan cubic-bezier */
+            transition: all 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
             visibility: hidden;
             opacity: 0;
+            transform: scale(1.1); /* Efek zoom sedikit saat keluar */
             z-index: 1;
+            pointer-events: none; /* Mencegah klik saat sedang transisi keluar */
         }
 
-        .active { visibility: visible; opacity: 1; z-index: 10; }
+        .active { 
+            visibility: visible; 
+            opacity: 1; 
+            transform: scale(1); /* Kembali ke ukuran normal */
+            z-index: 10; 
+            pointer-events: all;
+        }
 
-        /* --- SCREEN 1: HEART --- */
-        #home { visibility: visible; opacity: 1; }
+        /* --- SCREEN 1: HEART (HOME) --- */
+        #home { visibility: visible; opacity: 1; transform: scale(1); pointer-events: all; }
         
-        .heart {
+        .heart-btn {
             font-size: 100px;
-            color: #ff0000;
+            color: #e91e63;
             cursor: pointer;
-            filter: drop-shadow(0 0 10px rgba(255, 0, 0, 0.5));
-            animation: beat 0.8s infinite alternate ease-in-out;
+            filter: drop-shadow(0 0 15px rgba(233, 30, 99, 0.6));
+            animation: beat 1s infinite alternate ease-in-out;
             transition: transform 0.3s;
         }
+        
+        .heart-btn:hover { transform: scale(1.1); }
 
         @keyframes beat {
             from { transform: scale(1); }
-            to { transform: scale(1.2); }
+            to { transform: scale(1.15); }
         }
 
         /* --- SCREEN 2: MENU --- */
         .menu-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
+            gap: 25px;
             z-index: 20;
+            position: relative;
         }
 
         .menu-item {
-            width: 120px;
-            height: 120px;
-            background: rgba(255, 255, 255, 0.8);
-            border-radius: 15px;
+            width: 130px;
+            height: 130px;
+            /* Background agak transparan agar menyatu dengan dreamy effect */
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(5px);
+            border-radius: 20px;
             display: flex;
             justify-content: center;
             align-items: center;
             cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            font-weight: bold;
-            transition: 0.3s;
+            box-shadow: 0 8px 20px rgba(214, 51, 132, 0.15);
+            font-weight: 600;
+            color: #c2185b;
+            transition: all 0.3s ease;
             text-align: center;
-            padding: 10px;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        /* Ikon kecil di atas teks menu */
+        .menu-item span { font-size: 24px; }
+
+        .menu-item:hover { 
+            transform: translateY(-5px) scale(1.03); 
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 15px 30px rgba(214, 51, 132, 0.3);
         }
 
-        .menu-item:hover { transform: scale(1.05); background: #fff; }
-
-        /* --- SUB-PAGES --- */
+        /* --- SUB-PAGES KONTEN --- */
         .content-box {
             background: rgba(255, 255, 255, 0.9);
-            padding: 30px;
-            border-radius: 20px;
-            max-width: 90%;
-            max-height: 80%;
+            padding: 35px;
+            border-radius: 25px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 85vh;
             overflow-y: auto;
             text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+            position: relative;
+            z-index: 25;
         }
 
         .btn-back {
-            margin-top: 20px;
-            padding: 10px 20px;
-            background: #ff758c;
+            margin-top: 25px;
+            padding: 12px 30px;
+            background: linear-gradient(to right, #ff758c, #ff7eb3);
             color: white;
             border: none;
-            border-radius: 20px;
+            border-radius: 25px;
             cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(255, 117, 140, 0.4);
+            transition: 0.3s;
         }
+        .btn-back:hover { transform: scale(1.05); box-shadow: 0 8px 20px rgba(255, 117, 140, 0.6); }
 
-        /* PHOTO COLLAGE 3x2 */
-        .collage {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
+        /* PHOTO COLLAGE */
+        .collage { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 15px;}
+        .collage img { width: 100%; height: 120px; object-fit: cover; border-radius: 12px; border: 3px solid white; box-shadow: 0 4px 8px rgba(0,0,0,0.05);}
+
+        /* --- DREAMY FALLING PARTICLES (Bunga & Hati) --- */
+        #particle-container {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 5; overflow: hidden;
         }
-        .collage img { width: 100%; border-radius: 10px; }
-
-        /* PARTICLES */
-        .particle {
+        .falling-item {
             position: absolute;
-            top: -20px;
+            top: -50px;
             pointer-events: none;
-            animation: fall linear infinite;
+            /* Animasi jatuh + bergoyang (sway) */
+            animation: fall linear infinite, sway ease-in-out infinite alternate;
+            filter: blur(1px); /* Efek dreamy */
         }
 
         @keyframes fall {
-            to { transform: translateY(100vh) rotate(360deg); }
+            to { transform: translateY(110vh) rotate(360deg); }
+        }
+        /* Animasi bergoyang ke kiri kanan */
+        @keyframes sway {
+            from { margin-left: -30px; }
+            to { margin-left: 30px; }
         }
 
-        /* FIREWORKS CANVAS */
-        #fwCanvas { position: absolute; top: 0; left: 0; pointer-events: none; }
+        /* --- FIREWORKS CANVAS --- */
+        #fwCanvas { 
+            position: fixed; top: 0; left: 0; 
+            width: 100%; height: 100%; 
+            pointer-events: none; z-index: 1; /* Di belakang content-box */
+            background: transparent; /* Penting agar background pink tetap terlihat */
+        }
 
     </style>
 </head>
@@ -125,148 +169,248 @@
 
     <div id="particle-container"></div>
 
-    <div id="home" class="screen">
-        <div class="heart" onclick="goTo('menu')">❤️</div>
-        <p style="margin-top: 20px; font-weight: 300;">Click the heart</p>
+    <div id="home" class="screen active">
+        <div class="heart-btn" onclick="goTo('menu')">💖</div>
+        <p style="margin-top: 25px; font-size: 18px; letter-spacing: 1px; color: white; text-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+            Tap the heart...
+        </p>
     </div>
 
     <div id="menu" class="screen">
-        <h2 style="margin-bottom: 30px;">For You ✨</h2>
+        <h2 style="margin-bottom: 40px; font-size: 2em; text-shadow: 0 2px 10px rgba(255,255,255,0.5);">
+            Special For You ✨
+        </h2>
         <div class="menu-grid">
-            <div class="menu-item" onclick="goTo('page-foto')">Foto</div>
-            <div class="menu-item" onclick="goTo('page-video')">Video</div>
-            <div class="menu-item" onclick="goTo('page-hadiah')">Hadiah</div>
-            <div class="menu-item" onclick="goTo('page-pesan')">Pesan</div>
-            <div class="menu-item" onclick="goTo('page-kejutan'); startFireworks();">Kejutan</div>
-            <div class="menu-item" onclick="goTo('page-secret')">Secret</div>
+            <div class="menu-item" onclick="goTo('page-foto')"><span>📷</span>Foto</div>
+            <div class="menu-item" onclick="goTo('page-video')"><span>🎥</span>Video</div>
+            <div class="menu-item" onclick="goTo('page-hadiah')"><span>🎁</span>Hadiah</div>
+            <div class="menu-item" onclick="goTo('page-pesan')"><span>💌</span>Pesan</div>
+            <div class="menu-item" onclick="goTo('page-kejutan'); startFireworks();" style="background: #fff0f5;"><span>🎆</span>Kejutan</div>
+            <div class="menu-item" onclick="goTo('page-secret')"><span>🤫</span>Secret</div>
         </div>
     </div>
 
     <div id="page-foto" class="screen">
         <div class="content-box">
-            <h3>Our Memories</h3><br>
+            <h3>Our Memories 📸</h3>
             <div class="collage">
-                <img src="https://via.placeholder.com/150" alt="1">
-                <img src="https://via.placeholder.com/150" alt="2">
-                <img src="https://via.placeholder.com/150" alt="3">
-                <img src="https://via.placeholder.com/150" alt="4">
-                <img src="https://via.placeholder.com/150" alt="5">
-                <img src="https://via.placeholder.com/150" alt="6">
+                <img src="https://picsum.photos/200/200?random=1" alt="Foto 1">
+                <img src="https://picsum.photos/200/200?random=2" alt="Foto 2">
+                <img src="https://picsum.photos/200/200?random=3" alt="Foto 3">
+                <img src="https://picsum.photos/200/200?random=4" alt="Foto 4">
+                <img src="https://picsum.photos/200/200?random=5" alt="Foto 5">
+                <img src="https://picsum.photos/200/200?random=6" alt="Foto 6">
             </div>
-            <button class="btn-back" onclick="goTo('menu')">Back</button>
+            <button class="btn-back" onclick="goTo('menu')">Kembali</button>
         </div>
     </div>
 
     <div id="page-video" class="screen">
         <div class="content-box">
-            <h3>Special Video</h3><br>
-            <video width="100%" controls style="border-radius:10px; margin-bottom:10px;">
-                <source src="your-video1.mp4" type="video/mp4">
-            </video>
-            <video width="100%" controls style="border-radius:10px;">
-                <source src="your-video2.mp4" type="video/mp4">
-            </video>
-            <button class="btn-back" onclick="goTo('menu')">Back</button>
+            <h3>Special Video 🎬</h3>
+            <div style="margin: 20px 0;">
+                <video width="100%" height="200" controls style="border-radius:15px; margin-bottom:15px; background:#000;">
+                    <source src="" type="video/mp4"> Video tidak support.
+                </video>
+                <video width="100%" height="200" controls style="border-radius:15px; background:#000;">
+                    <source src="" type="video/mp4"> Video tidak support.
+                </video>
+            </div>
+            <button class="btn-back" onclick="goTo('menu')">Kembali</button>
         </div>
     </div>
 
     <div id="page-hadiah" class="screen">
         <div class="content-box">
             <h3>Happy Birthday! 🎂</h3>
-            <p style="font-size: 24px; margin: 20px 0;">🎁</p>
-            <p>Selamat ulang tahun! Semoga harimu seindah senyummu.</p>
-            <button class="btn-back" onclick="goTo('menu')">Back</button>
+            <div style="font-size: 60px; margin: 20px 0; animation: beat 1.5s infinite;">🎁</div>
+            <p style="font-size: 18px; line-height: 1.6;">
+                Selamat ulang tahun ya!<br>
+                Semoga panjang umur, sehat selalu, dan semua keinginanmu tercapai. Wish you all the best! 🥳
+            </p>
+            <button class="btn-back" onclick="goTo('menu')">Kembali</button>
         </div>
     </div>
 
     <div id="page-pesan" class="screen">
-        <div class="content-box">
-            <h3>Message for You</h3>
-            <p style="line-height: 1.6; margin-top: 15px;">
-                "Aku cuma mau bilang terima kasih udah ada di sini. Kamu berharga banget buat aku..."
+        <div class="content-box" style="text-align: left;">
+            <h3 style="text-align: center;">A Message For You 💌</h3>
+            <p style="line-height: 1.8; margin-top: 25px; font-size: 16px; color: #555;">
+                "Hai kamu...<br><br>
+                Aku cuma mau bilang makasih udah jadi bagian dari hari-hariku. Mungkin aku nggak sering bilang ini, tapi kamu itu berarti banget buat aku. Jangan pernah lupa itu ya. Tetap jadi dirimu yang baik hati."
+                <br><br>
+                <i>- From me -</i>
             </p>
-            <button class="btn-back" onclick="goTo('menu')">Back</button>
+            <div style="text-align: center;">
+                <button class="btn-back" onclick="goTo('menu')">Kembali</button>
+            </div>
         </div>
     </div>
 
-    <div id="page-kejutan" class="screen">
-        <canvas id="fwCanvas"></canvas>
-        <div class="content-box" style="z-index: 100;">
-            <h3>Surprise!!! 🎆</h3>
-            <p>Boom! Hope you like it!</p>
-            <button class="btn-back" onclick="goTo('menu'); stopFireworks();">Back</button>
+    <div id="page-kejutan" class="screen" style="background: transparent;"> <canvas id="fwCanvas"></canvas>
+        <div class="content-box" style="background: rgba(255,255,255,0.85); backdrop-filter: blur(10px);">
+            <h2 style="font-size: 2.5em;">SURPRISE!!! 🎉</h2>
+            <p style="margin-top: 15px; font-size: 18px;">Look at the fireworks! Hope it makes you smile.</p>
+            <button class="btn-back" onclick="goTo('menu'); stopFireworks();">Kembali</button>
         </div>
     </div>
 
     <div id="page-secret" class="screen">
         <div class="content-box">
-            <h3>The Secret.. 🤫</h3>
-            <p style="font-size: 20px; font-weight: bold; margin-top: 20px;">
-                "Jadi kapan mau official?"
-            </p>
-            <button class="btn-back" onclick="goTo('menu')">Back</button>
+            <h3>Psst... The Secret 🤫</h3>
+            <div style="margin: 40px 0;">
+                <p style="font-size: 24px; font-weight: bold; color: #e91e63;">
+                    "Jadi... kapan mau official?"
+                </p>
+                <div style="font-size: 40px; margin-top: 20px;">🫣👉👈</div>
+            </div>
+            <button class="btn-back" onclick="goTo('menu')">Kembali</button>
         </div>
     </div>
 
+
     <script>
-        // Navigasi
+        /* --- SISTEM NAVIGASI --- */
+        // Pindah antar layar dengan menambahkan class 'active'
         function goTo(id) {
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
+            const screens = document.querySelectorAll('.screen');
+            screens.forEach(s => s.classList.remove('active'));
             
-            // Start/Stop particles only in menu or subpages
+            const target = document.getElementById(id);
+            // Sedikit delay agar transisi CSS 'transform: scale(1.1)' pada elemen sebelumnya terlihat dulu
+            setTimeout(() => {
+               target.classList.add('active');
+            }, 50);
+
+            // Kontrol efek partikel jatuh
+            const particleContainer = document.getElementById('particle-container');
             if(id === 'home') {
-                document.getElementById('particle-container').innerHTML = '';
-            } else if(id === 'menu') {
-                createParticles();
+                // Bersihkan partikel di home
+                particleContainer.innerHTML = '';
+            } else {
+                // Tambahkan partikel jika belum ada (untuk menu dan sub-halaman)
+                if(particleContainer.children.length === 0) createDreamyParticles();
             }
         }
 
-        // Efek Kelopak Bunga & Hati Jatuh
-        function createParticles() {
+        /* --- EFEK 1: DREAMY FALLING PARTICLES (Lebih ramai & dreamy) --- */
+        function createDreamyParticles() {
             const container = document.getElementById('particle-container');
-            if(container.children.length > 0) return;
-            
-            const emojis = ['🌸', '❤️', '✨', '💖'];
-            for (let i = 0; i < 20; i++) {
+            const emojis = ['🌸', '❤️', '✨', '💖', '🏵️', '🎀'];
+            // Jumlah partikel diperbanyak (60)
+            const particleCount = 60; 
+
+            for (let i = 0; i < particleCount; i++) {
                 let p = document.createElement('div');
-                p.className = 'particle';
+                p.className = 'falling-item';
                 p.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+                
+                // Randomisasi posisi, ukuran, dan kecepatan
                 p.style.left = Math.random() * 100 + 'vw';
-                p.style.animationDuration = (Math.random() * 3 + 2) + 's';
-                p.style.fontSize = Math.random() * 10 + 15 + 'px';
-                p.style.opacity = Math.random();
+                // Durasi jatuh antara 4s sampai 9s
+                const duration = Math.random() * 5 + 4; 
+                p.style.animationDuration = `${duration}s, ${Math.random() * 2 + 2}s`; // durasi fall, durasi sway
+                p.style.animationDelay = `-${Math.random() * 8}s`; // Delay negatif agar langsung mulai di tengah layar
+                p.style.fontSize = Math.random() * 15 + 10 + 'px';
+                p.style.opacity = Math.random() * 0.6 + 0.2; // Opacity bervariasi
+                
                 container.appendChild(p);
             }
         }
 
-        // Efek Kembang Api Sederhana
+
+        /* --- EFEK 2: SISTEM KEMBANG API PARTIKEL NYATA --- */
         const canvas = document.getElementById('fwCanvas');
         const ctx = canvas.getContext('2d');
         let fwActive = false;
+        let particles = []; // Array untuk menyimpan partikel aktif
+
+        // Kelas untuk satu butir partikel kembang api
+        class Particle {
+            constructor(x, y, color) {
+                this.x = x; this.y = y;
+                this.color = color;
+                // Kecepatan acak ke segala arah (ledakan bulat)
+                const angle = Math.random() * Math.PI * 2;
+                const speed = Math.random() * 4 + 2; // Kecepatan ledakan
+                this.vx = Math.cos(angle) * speed;
+                this.vy = Math.sin(angle) * speed;
+                this.alpha = 1; // Transparansi awal
+                this.decay = Math.random() * 0.015 + 0.01; // Kecepatan memudar
+                this.gravity = 0.05; // Gaya tarik ke bawah
+            }
+            update() {
+                this.vx *= 0.98; // Gesekan udara (memperlambat horizontal)
+                this.vy += this.gravity; // Gravitasi (menarik ke bawah)
+                this.x += this.vx;
+                this.y += this.vy;
+                this.alpha -= this.decay; // Memudar
+            }
+            draw(ctx) {
+                ctx.globalAlpha = this.alpha;
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, 2.5, 0, Math.PI * 2); // Ukuran partikel
+                ctx.fill();
+            }
+        }
 
         function startFireworks() {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
             fwActive = true;
+            particles = []; // Reset partikel
             animateFW();
+            // Buat ledakan otomatis setiap beberapa saat
+            autoExplodeBtn = setInterval(randomExplosion, 800); 
         }
 
-        function stopFireworks() { fwActive = false; }
+        function stopFireworks() { 
+            fwActive = false; 
+            clearInterval(autoExplodeBtn);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
 
+        // Fungsi membuat satu titik ledakan
+        function randomExplosion() {
+            if(!fwActive) return;
+            const x = Math.random() * canvas.width * 0.8 + canvas.width * 0.1;
+            const y = Math.random() * canvas.height * 0.5 + canvas.height * 0.1;
+            const colors = ['#ff0040', '#ffeb3b', '#00ccff', '#ff66b2', '#adff2f'];
+            const chosenColor = colors[Math.floor(Math.random() * colors.length)];
+            
+            // Buat 40 partikel per ledakan
+            for(let i=0; i<40; i++) {
+                particles.push(new Particle(x, y, chosenColor));
+            }
+        }
+
+        // Loop animasi utama kembang api
         function animateFW() {
             if(!fwActive) return;
-            ctx.fillStyle = 'rgba(255, 154, 158, 0.2)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            
-            for(let i=0; i<5; i++) {
-                ctx.beginPath();
-                ctx.arc(Math.random()*canvas.width, Math.random()*canvas.height, Math.random()*5, 0, Math.PI*2);
-                ctx.fillStyle = `hsl(${Math.random()*360}, 100%, 50%)`;
-                ctx.fill();
+            // Hapus canvas dengan sedikit jejak (trail effect)
+            ctx.globalAlpha = 0.2;
+            ctx.fillStyle = 'transparent'; // Gunakan transparent agar tidak menutupi background pink
+            ctx.clearRect(0, 0, canvas.width, canvas.height); 
+            ctx.globalAlpha = 1;
+
+            // Update dan gambar semua partikel aktif
+            for(let i = particles.length - 1; i >= 0; i--) {
+                particles[i].update();
+                particles[i].draw(ctx);
+                // Hapus partikel yang sudah pudar
+                if(particles[i].alpha <= 0) {
+                    particles.splice(i, 1);
+                }
             }
             requestAnimationFrame(animateFW);
         }
+
+        // Resize canvas jika layar diubah ukurannya
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
     </script>
 </body>
 </html>
