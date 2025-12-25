@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>For Revalina Bilqis</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Satisfy&display=swap" rel="stylesheet">
     <style>
         /* --- GLOBAL STYLES --- */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
@@ -19,12 +20,13 @@
         .bg-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: url('bg.jpg') center/cover no-repeat;
+            background: url('bg-reva.jpg') center/cover no-repeat;
             opacity: 0; 
             transition: opacity 1.5s ease;
             z-index: -1;
         }
 
+        /* Navigasi Layar */
         .screen {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -47,7 +49,6 @@
 
         /* --- MENU GRID --- */
         .menu-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; z-index: 20; }
-        
         .menu-item {
             width: 140px; height: 140px; background: rgba(255, 255, 255, 0.8);
             backdrop-filter: blur(8px); border-radius: 20px;
@@ -55,17 +56,8 @@
             cursor: pointer; box-shadow: 0 10px 20px rgba(0,0,0,0.1);
             font-weight: bold; transition: all 0.3s ease;
         }
-
-        /* EFEK ZOOM SAAT MENU DIKLIK */
-        .menu-item:active {
-            transform: scale(0.9); /* Mengecil dikit saat ditekan */
-        }
-        
-        .menu-item:hover { 
-            transform: scale(1.1); /* Zoom saat hover */
-            background: #fff; 
-        }
-
+        .menu-item:hover { transform: scale(1.1); background: #fff; }
+        .menu-item:active { transform: scale(0.9); }
         .menu-item span { font-size: 30px; margin-bottom: 5px; }
 
         /* --- CONTENT BOX --- */
@@ -85,26 +77,31 @@
         @keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }
         @keyframes sway { from { margin-left: -20px; } to { margin-left: 20px; } }
 
-        /* --- FIREWORKS CANVAS --- */
+        /* --- FIREWORKS --- */
         #fwCanvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 2; }
 
-        /* --- SECRET BUTTONS --- */
-        .btn-wrap { display: flex; justify-content: center; gap: 20px; margin-top: 20px; position: relative; }
-        .btn-yes, .btn-no { padding: 10px 25px; border: none; border-radius: 20px; cursor: pointer; font-weight: bold; transition: 0.2s; }
-        .btn-yes { background: #ff758c; color: white; }
-        .btn-no { background: #ccc; color: #555; position: relative; z-index: 999; }
-
-        /* --- FOOTER --- */
-        footer {
-            position: fixed; bottom: 15px; width: 100%;
-            text-align: center; font-size: 14px; color: rgba(214, 51, 132, 0.8);
-            z-index: 100; font-weight: bold; letter-spacing: 1px;
+        /* --- KUE & LILIN (MENU HADIAH) --- */
+        .cake-box { display: flex; flex-direction: column; align-items: center; transition: 0.5s; }
+        .cake-box.blown-out { opacity: 0; transform: translateY(20px); pointer-events: none; }
+        .cake-base { width: 150px; height: 60px; background: #ffc1e3; border-radius: 10px 10px 5px 5px; position: relative; }
+        .cake-icing { position: absolute; top: -10px; left: -5px; width: 160px; height: 30px; background: #fff; border-radius: 15px; }
+        .candle { width: 12px; height: 35px; background: linear-gradient(#fff, #eee); border-radius: 3px; position: relative; z-index: 2; }
+        .flame { 
+            width: 18px; height: 25px; background: radial-gradient(ellipse at bottom, #fff6d5 0%, #ffeb3b 40%, #ff5722 100%);
+            border-radius: 50% 50% 35% 35% / 60% 60% 40% 40%; position: absolute; top: -25px; left: 50%; transform: translateX(-50%);
+            cursor: pointer; animation: flicker 0.8s infinite alternate;
         }
+        @keyframes flicker { from { opacity: 0.9; transform: translateX(-50%) scale(1); } to { opacity: 1; transform: translateX(-50%) scale(1.1); } }
+        #message-container { display: none; }
 
+        /* --- LAIN-LAIN --- */
         .btn-back { margin-top: 20px; padding: 10px 25px; background: #ff758c; color: #fff; border: none; border-radius: 15px; cursor: pointer; font-weight: bold; }
-        .collage { display: grid; grid-template-columns: repeat(2, 3fr); gap: 10px; margin-top: 10px; }
+        .collage { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 10px; }
         .collage img { width: 100%; height: 110px; object-fit: cover; border-radius: 10px; border: 2px solid white; }
-        #typewriter { line-height: 1.6; font-style: italic; min-height: 50px; font-size: 15px; color: #444; }
+        #typewriter { text-align: left; font-style: italic; font-size: 15px; margin-top: 15px; }
+        .btn-no { position: relative; transition: 0.1s; }
+        footer { position: fixed; bottom: 15px; width: 100%; text-align: center; font-size: 14px; color: rgba(214, 51, 132, 0.8); z-index: 100; font-weight: bold; }
+
     </style>
 </head>
 <body>
@@ -120,14 +117,14 @@
     </div>
 
     <div id="menu" class="screen">
-        <h2 style="margin-bottom:30px; text-shadow: 2px 2px 5px rgba(255,255,255,0.5);">For Revalina Bilqis ✨</h2>
+        <h2 style="margin-bottom:30px;">For Revalina Bilqis ✨</h2>
         <div class="menu-grid">
-            <div class="menu-item" onclick="menuClick('page-foto')"><span>📸</span>Foto</div>
-            <div class="menu-item" onclick="menuClick('page-video')"><span>🎥</span>Video</div>
-            <div class="menu-item" onclick="menuClick('page-hadiah')"><span>🎁</span>Hadiah</div>
-            <div class="menu-item" onclick="menuClick('page-pesan'); startTypewriter();"><span>💌</span>Pesan</div>
-            <div class="menu-item" onclick="menuClick('page-kejutan'); startFireworks();"><span>🎆</span>Kejutan</div>
-            <div class="menu-item" onclick="menuClick('page-secret')"><span>🤫</span>Secret</div>
+            <div class="menu-item" onclick="goTo('page-foto')"><span>📸</span>Foto</div>
+            <div class="menu-item" onclick="goTo('page-video')"><span>🎥</span>Video</div>
+            <div class="menu-item" onclick="goTo('page-hadiah')"><span>🎁</span>Hadiah</div>
+            <div class="menu-item" onclick="goTo('page-pesan'); startTypewriter();"><span>💌</span>Pesan</div>
+            <div class="menu-item" onclick="goTo('page-kejutan'); startFireworks();"><span>🎆</span>Kejutan</div>
+            <div class="menu-item" onclick="goTo('page-secret')"><span>🤫</span>Secret</div>
         </div>
     </div>
 
@@ -135,32 +132,40 @@
         <div class="content-box">
             <h3>Our Memories 📸</h3>
             <div class="collage">
-                <img src="foto1.jpg" alt="1"><img src="foto2.jpg" alt="2">
-                <img src="foto3.jpg" alt="3"><img src="foto4.jpg" alt="4">
-                <img src="foto5.jpg" alt="5"><img src="foto6.jpg" alt="6">
+                <img src="foto1.jpg"><img src="foto2.jpg">
+                <img src="foto3.jpg"><img src="foto4.jpg">
+                <img src="foto5.jpg"><img src="foto6.jpg">
             </div>
             <button class="btn-back" onclick="goTo('menu')">Back</button>
         </div>
     </div>
 
     <div id="page-video" class="screen">
-    <div class="content-box">
-        <h3>Video for You 🎥</h3>
-        <video width="100%" controls style="border-radius:15px; margin-top:10px; box-shadow: 0 5px 15px rgba(0,0,0,0.2);">
-            <source src="video1.mp4" type="video/mp4">
-        </video>
-        <video width="100%" controls style="border-radius:15px; margin-top:10px; box-shadow: 0 5px 15px rgba(0,0,0,0.2);">
-            <source src="video2.mp4" type="video/mp4">
-        </video>
-        <button class="btn-back" onclick="goTo('menu')">Back</button>
+        <div class="content-box">
+            <h3>Special Video 🎥</h3>
+            <video width="100%" controls style="border-radius:15px; margin-top:10px;">
+                <source src="video1.mp4" type="video/mp4">
+            </video>
+            <video width="100%" controls style="border-radius:15px; margin-top:10px;">
+                <source src="video2.mp4" type="video/mp4">
+            </video>
+            <button class="btn-back" onclick="goTo('menu')">Back</button>
+        </div>
     </div>
-</div>
 
     <div id="page-hadiah" class="screen">
         <div class="content-box">
-            <h3>Happy Birthday! 🎂</h3>
-            <p style="font-size: 60px; margin: 10px 0;">🎁</p>
-            <p>Semoga setiap langkahmu kedepan selalu diberkati kebahagiaan. You deserve the world!</p>
+            <div id="cakeBox" class="cake-box">
+                <div class="flame" onclick="blowCandle(event)"></div>
+                <div class="candle"></div>
+                <div class="cake-base"><div class="cake-icing"></div></div>
+                <p style="margin-top: 15px; font-weight: bold;">Tap apinya buat tiup lilin! 🎂</p>
+            </div>
+            <div id="message-container">
+                <h3>Happy Birthday! 🥳</h3>
+                <p style="font-size: 50px;">🎁</p>
+                <p>Semoga setiap langkahmu diberkati kebahagiaan. You deserve the world! ✨</p>
+            </div>
             <button class="btn-back" onclick="goTo('menu')">Back</button>
         </div>
     </div>
@@ -168,15 +173,15 @@
     <div id="page-pesan" class="screen">
         <div class="content-box">
             <h3>A Message 💌</h3>
-            <div id="typewriter" style="margin-top:20px; text-align: left;"></div>
+            <div id="typewriter"></div>
             <button class="btn-back" onclick="goTo('menu')">Back</button>
         </div>
     </div>
 
     <div id="page-kejutan" class="screen">
         <div class="content-box">
-            <h3 style="font-size: 28px;">DUARRR!!! 🎆</h3>
-            <p style="margin-top: 10px;">Indah kan kembang apinya? Sama kayak kamu!</p>
+            <h3>DUARRR!!! 🎆</h3>
+            <p>Indah kan kembang apinya? Kayak kamu!</p>
             <button class="btn-back" onclick="goTo('menu'); stopFireworks();">Back</button>
         </div>
     </div>
@@ -184,12 +189,12 @@
     <div id="page-secret" class="screen">
         <div class="content-box">
             <h3>The Secret.. 🤫</h3>
-            <p style="font-size: 22px; font-weight: bold; margin: 20px 0; color: #e91e63;">"Jadi kapan mau official?"</p>
-            <div class="btn-wrap">
-                <button class="btn-yes" onclick="alert('Yay! Akhirnya! ❤️ Revalina & Raafi ❤️')">Sekarang</button>
-                <button class="btn-no" id="runBtn" onmouseover="runAway()" onclick="runAway()">Nanti aja</button>
+            <p style="font-size: 18px; font-weight: bold; margin: 20px 0;">"Jadi kapan mau official?"</p>
+            <div style="display:flex; justify-content:center; gap:15px;">
+                <button class="btn-back" style="background:#4CAF50" onclick="alert('Yay! ❤️ Revalina & Raafi ❤️')">Sekarang</button>
+                <button class="btn-back btn-no" id="runBtn" onmouseover="runAway()">Nanti aja</button>
             </div>
-            <button class="btn-back" onclick="goTo('menu')">Back</button>
+            <button class="btn-back" style="background:#555" onclick="goTo('menu')">Back</button>
         </div>
     </div>
 
@@ -200,122 +205,100 @@
         const overlay = document.getElementById('overlay');
 
         function startEverything() {
-            bgm.play().catch(() => console.log("User interaction required for audio"));
+            bgm.play().catch(() => {});
             goTo('menu');
             overlay.style.opacity = "0.5";
-            createDreamyParticles();
-        }
-
-        // Fungsi khusus klik menu dengan efek zoom
-        function menuClick(id) {
-            // Beri sedikit delay agar user bisa melihat efek zoom `:active`
-            setTimeout(() => {
-                goTo(id);
-            }, 150);
+            createParticles();
         }
 
         function goTo(id) {
-            document.querySelectorAll('.screen').forEach(s => {
-                s.classList.remove('active');
-                s.style.pointerEvents = "none";
-            });
-            const target = document.getElementById(id);
-            setTimeout(() => {
-                target.classList.add('active');
-                target.style.pointerEvents = "all";
-            }, 50);
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            if (id === 'page-hadiah') resetCake();
         }
 
-        // TYPEWRITER EFFECT
-        const textToType = "Hai Revalina Bilqis... Aku cuma mau bilang kalau kamu itu spesial. Makasih ya udah hadir dan kasih warna di hidup aku. Jangan pernah berhenti jadi orang baik. I'm lucky to have you around. ✨";
-        let i = 0;
+        // TYPEWRITER
         function startTypewriter() {
+            const txt = "Hai Revalina Bilqis... Aku cuma mau bilang kalau kamu itu spesial. Makasih ya udah hadir dan kasih warna di hidup aku. Tetaplah bersinar! ✨";
             const el = document.getElementById('typewriter');
             el.innerHTML = "";
-            i = 0;
+            let i = 0;
             function type() {
-                if (i < textToType.length) {
-                    el.innerHTML += textToType.charAt(i);
-                    i++;
-                    setTimeout(type, 50);
-                }
+                if (i < txt.length) { el.innerHTML += txt.charAt(i); i++; setTimeout(type, 50); }
             }
             type();
+        }
+
+        // CAKE LOGIC
+        function blowCandle(e) {
+            document.getElementById('cakeBox').classList.add('blown-out');
+            setTimeout(() => {
+                document.getElementById('cakeBox').style.display = 'none';
+                document.getElementById('message-container').style.display = 'block';
+                startFireworks();
+                setTimeout(stopFireworks, 4000);
+            }, 600);
+        }
+        function resetCake() {
+            document.getElementById('cakeBox').style.display = 'flex';
+            document.getElementById('cakeBox').classList.remove('blown-out');
+            document.getElementById('message-container').style.display = 'none';
         }
 
         // RUNAWAY BUTTON
         function runAway() {
             const btn = document.getElementById('runBtn');
-            const x = Math.random() * (window.innerWidth - btn.clientWidth - 100);
-            const y = Math.random() * (window.innerHeight - btn.clientHeight - 100);
             btn.style.position = 'fixed';
-            btn.style.left = x + 'px';
-            btn.style.top = y + 'px';
+            btn.style.left = Math.random() * (window.innerWidth - 100) + 'px';
+            btn.style.top = Math.random() * (window.innerHeight - 50) + 'px';
         }
 
-        // PARTICLES (Bunga & Hati)
-        function createDreamyParticles() {
+        // PARTICLES
+        function createParticles() {
             const container = document.getElementById('particle-container');
             const emojis = ['🌸', '❤️', '✨', '💖', '🌼'];
-            for (let i = 0; i < 50; i++) {
+            for (let i = 0; i < 40; i++) {
                 let p = document.createElement('div');
                 p.className = 'falling-item';
                 p.innerText = emojis[Math.floor(Math.random() * emojis.length)];
                 p.style.left = Math.random() * 100 + 'vw';
                 p.style.animationDuration = (Math.random() * 5 + 5) + 's, ' + (Math.random() * 2 + 2) + 's';
-                p.style.animationDelay = `-${Math.random() * 5}s`;
                 p.style.fontSize = Math.random() * 15 + 10 + 'px';
                 p.style.opacity = Math.random() * 0.5 + 0.3;
                 container.appendChild(p);
             }
         }
 
-        // FIREWORKS LOGIC
+        // FIREWORKS
         const canvas = document.getElementById('fwCanvas');
         const ctx = canvas.getContext('2d');
-        let fwActive = false;
-        let pList = [];
-        let fInterval;
-
-        class FireworkParticle {
-            constructor(x, y, color) {
-                this.x = x; this.y = y; this.color = color;
-                const angle = Math.random() * Math.PI * 2;
-                const speed = Math.random() * 6 + 2;
-                this.vx = Math.cos(angle) * speed;
-                this.vy = Math.sin(angle) * speed;
-                this.alpha = 1;
-                this.decay = Math.random() * 0.02 + 0.015;
+        let fwActive = false, pList = [], fInt;
+        class P {
+            constructor(x, y, c) {
+                this.x = x; this.y = y; this.c = c;
+                const a = Math.random() * 6.28, s = Math.random() * 5 + 2;
+                this.vx = Math.cos(a) * s; this.vy = Math.sin(a) * s;
+                this.al = 1; this.d = Math.random() * 0.02 + 0.01;
             }
-            draw() {
-                ctx.globalAlpha = this.alpha;
-                ctx.fillStyle = this.color;
-                ctx.beginPath(); ctx.arc(this.x, this.y, 3, 0, Math.PI*2); ctx.fill();
-            }
-            update() { this.x += this.vx; this.y += this.vy; this.vy += 0.1; this.alpha -= this.decay; }
+            draw() { ctx.globalAlpha = this.al; ctx.fillStyle = this.c; ctx.beginPath(); ctx.arc(this.x, this.y, 3, 0, 6.28); ctx.fill(); }
+            update() { this.x += this.vx; this.y += this.vy; this.vy += 0.1; this.al -= this.d; }
         }
-
         function startFireworks() {
             canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-            fwActive = true;
-            loop();
-            fInterval = setInterval(() => {
-                const x = Math.random() * canvas.width;
-                const y = Math.random() * (canvas.height * 0.4);
-                const color = `hsl(${Math.random()*360}, 100%, 60%)`;
-                for(let j=0; j<40; j++) pList.push(new FireworkParticle(x, y, color));
-            }, 500);
+            fwActive = true; loop();
+            fInt = setInterval(() => {
+                const x = Math.random() * canvas.width, y = Math.random() * canvas.height * 0.5;
+                const c = `hsl(${Math.random() * 360}, 100%, 60%)`;
+                for (let i = 0; i < 30; i++) pList.push(new P(x, y, c));
+            }, 600);
         }
-
-        function stopFireworks() { fwActive = false; clearInterval(fInterval); ctx.clearRect(0,0,canvas.width,canvas.height); pList = []; }
-
+        function stopFireworks() { fwActive = false; clearInterval(fInt); ctx.clearRect(0, 0, canvas.width, canvas.height); pList = []; }
         function loop() {
-            if(!fwActive) return;
-            ctx.clearRect(0,0,canvas.width,canvas.height);
-            for(let idx = pList.length - 1; idx >= 0; idx--) {
-                pList[idx].update();
-                pList[idx].draw();
-                if(pList[idx].alpha <= 0) pList.splice(idx, 1);
+            if (!fwActive) return;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = pList.length - 1; i >= 0; i--) {
+                pList[i].update(); pList[i].draw();
+                if (pList[i].al <= 0) pList.splice(i, 1);
             }
             requestAnimationFrame(loop);
         }
