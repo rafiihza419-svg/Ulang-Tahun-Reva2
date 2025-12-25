@@ -3,27 +3,35 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Special for You 💖</title>
+<title>Special for You ❤️</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div id="opening">
-  <div id="heart">💗</div>
+<!-- OPENING -->
+<section id="opening">
+  <div id="heart">❤️</div>
   <p>TAP UNTUK MEMBUKA</p>
-</div>
+</section>
 
-<div id="menu" class="hidden">
-  <div class="bg"></div>
-  <div class="balls">
-    <div class="ball">🎁</div>
-    <div class="ball">💌</div>
-    <div class="ball">🎬</div>
-    <div class="ball">📸</div>
-    <div class="ball">🤍</div>
-    <div class="ball">✨</div>
+<!-- MENU -->
+<section id="menu" class="hidden">
+  <div class="particles"></div>
+  <div class="menu-grid">
+    <div class="menu-item" onclick="openPage('foto')">📸<span>Foto</span></div>
+    <div class="menu-item" onclick="openPage('video')">🎥<span>Video</span></div>
+    <div class="menu-item" onclick="openPage('hadiah')">🎁<span>Hadiah</span></div>
+    <div class="menu-item" onclick="openPage('pesan')">💌<span>Pesan</span></div>
+    <div class="menu-item" onclick="openPage('kejutan')">🎆<span>Kejutan</span></div>
+    <div class="menu-item" onclick="openPage('secret')">🔒<span>Secret</span></div>
   </div>
-</div>
+</section>
+
+<!-- PAGE -->
+<section id="page" class="hidden">
+  <button class="back" onclick="backMenu()">← Back</button>
+  <div id="content"></div>
+</section>
 
 <script src="script.js"></script>
 </body>
