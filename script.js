@@ -18,8 +18,31 @@ heart.onclick = () => {
     }, 800);
 };
 
+function createBallTexture(icon, bgColor) {
+    const canvas = document.createElement("canvas");
+    canvas.width = 256;
+    canvas.height = 256;
+    const ctx = canvas.getContext("2d");
+
+    // background
+    ctx.fillStyle = bgColor;
+    ctx.beginPath();
+    ctx.arc(128, 128, 120, 0, Math.PI * 2);
+    ctx.fill();
+
+    // icon
+    ctx.font = "120px Arial";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillStyle = "#fff";
+    ctx.fillText(icon, 128, 140);
+
+    return new THREE.CanvasTexture(canvas);
+}
+
 function initThree() {
     scene = new THREE.Scene();
+
     camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
     camera.position.z = 18;
 
@@ -28,7 +51,10 @@ function initThree() {
     renderer.setPixelRatio(window.devicePixelRatio);
     container.appendChild(renderer.domElement);
 
-    scene.add(new THREE.AmbientLight(0xffffff, 1));
+    scene.add(new THREE.AmbientLight(0xffffff, 1.2));
+    const light = new THREE.PointLight(0xffffff, 1);
+    light.position.set(10, 10, 10);
+    scene.add(light);
 
     menuGroup = new THREE.Group();
     scene.add(menuGroup);
@@ -37,116 +63,133 @@ function initThree() {
     mouse = new THREE.Vector2();
 
     const menus = [
-        { name: "Hadiah", icon: "🎁", color: 0xff6b6b, type: "text", val: "Kejutan spesial menantimu! 💖" },
-        { name: "Surat", icon: "✉️", color: 0x4ecdc4, type: "text", val: "Terima kasih sudah selalu ada." },
-        { name: "Video", icon: "🎬", color: 0xffd93d, type: "text", val: "Momen kita adalah film terbaik." },
-        { name: "Foto", icon: "📸", color: 0xff8066, type: "photo" },
-        { name: "Rahasia", icon: "🤫", color: 0x6c5ce7, type: "secret", val: "Jadi mau official kapan?" },
-        { name: "Kejutan", icon: "✨", color: 0xfeca57, type: "surprise" }
+        { name: "Hadiah", icon: "🎁", color: "#ff6b6b", val: "Kejutan spesial menantimu! 💖" },
+        { name: "Surat", icon: "✉️", color: "#4ecdc4", val: "Terima kasih sudah selalu ada." },
+        { name: "Video", icon: "🎬", color: "#ffd93d", val: "Momen kita adalah film terbaik." },
+        { name: "Foto", icon: "📸", color: "#ff8066", type: "photo" },
+        { name: "Rahasia", icon: "🤫", color: "#6c5ce7", val: "Jadi mau official kapan?" },
+        { name: "Kejutan", icon: "✨", color: "#feca57", type: "surprise" }
     ];
 
-    const radius = 6.5;
+    const radius = 7.5;
+
     menus.forEach((m, i) => {
         const phi = Math.acos(-1 + (2 * i) / menus.length);
         const theta = Math.sqrt(menus.length * Math.PI) * phi;
 
+        const texture = createBallTexture(m.icon, m.color);
+
         const ball = new THREE.Mesh(
-            new THREE.SphereGeometry(1.5, 32, 32),
-            new THREE.MeshStandardMaterial({ color: m.color, roughness: 0.1, metalness: 0.2 })
+            new THREE.SphereGeometry(1.9, 48, 48),
+            new THREE.MeshStandardMaterial({
+                map: texture,
+                roughness: 0.25,
+                metalness: 0.35
+            })
         );
-        ball.position.set(radius * Math.cos(theta) * Math.sin(phi), radius * Math.sin(theta) * Math.sin(phi), radius * Math.cos(phi));
+
+        ball.position.set(
+            radius * Math.cos(theta) * Math.sin(phi),
+            radius * Math.sin(theta) * Math.sin(phi),
+            radius * Math.cos(phi)
+        );
+
         ball.userData = m;
         menuGroup.add(ball);
-
-        // Buat Label Ikon (Emoji)
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-        canvas.width = 128; canvas.height = 128;
-        ctx.font = "80px Arial"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
-        ctx.fillText(m.icon, 64, 64);
-        const sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(canvas) }));
-        sprite.position.copy(ball.position);
-        sprite.scale.set(3, 3, 1);
-        menuGroup.add(sprite);
     });
 
-    // Kontrol Putar
-    window.addEventListener("mousedown", e => { dragging = true; lx = e.clientX; ly = e.clientY; });
+    // Drag rotate
+    window.addEventListener("mousedown", e => {
+        dragging = true;
+        lx = e.clientX;
+        ly = e.clientY;
+    });
+
     window.addEventListener("mouseup", () => dragging = false);
+
     window.addEventListener("mousemove", e => {
-        if (dragging) {
-            rotY += (e.clientX - lx) * 0.007;
-            rotX += (e.clientY - ly) * 0.007;
-            lx = e.clientX; ly = e.clientY;
-        }
+        if (!dragging) return;
+        rotY += (e.clientX - lx) * 0.006;
+        rotX += (e.clientY - ly) * 0.006;
+        lx = e.clientX;
+        ly = e.clientY;
     });
 
-    // Deteksi Klik Sangat Akurat
-    window.addEventListener("click", (e) => {
-        if (dragging && Math.abs(e.clientX - lx) > 5) return;
+    // Click detection
+    window.addEventListener("click", e => {
         mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
         mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
         raycaster.setFromCamera(mouse, camera);
         const hits = raycaster.intersectObjects(menuGroup.children);
-        const target = hits.find(h => h.object.userData.name);
-        if (target) openMenu(target.object.userData);
+        if (hits.length) openMenu(hits[0].object.userData);
     });
 }
 
 function openMenu(data) {
-    let html = `<h3>${data.name} ${data.icon}</h3><br>`;
+    let html = `<h3>${data.name}</h3><br>`;
     if (data.type === "photo") {
         html += `<div class="photo-grid">`;
-        for(let i=1; i<=6; i++) html += `<div class="photo-item">FOTO ${i}</div>`;
+        for (let i = 1; i <= 6; i++) html += `<div class="photo-item">FOTO ${i}</div>`;
         html += `</div>`;
     } else if (data.type === "surprise") {
         html += `<p>BOOM! 🎆</p>`;
         createFireworks();
     } else {
-        html += `<p style="font-size:18px; font-weight:bold;">${data.val}</p>`;
+        html += `<p style="font-size:18px;font-weight:bold">${data.val}</p>`;
     }
     modalContent.innerHTML = html;
     modal.classList.remove("hidden");
 }
 
 function createFireworks() {
-    for(let i=0; i<40; i++) {
-        const p = new THREE.Mesh(new THREE.SphereGeometry(0.1), new THREE.MeshBasicMaterial({ color: Math.random() * 0xffffff }));
+    for (let i = 0; i < 50; i++) {
+        const p = new THREE.Mesh(
+            new THREE.SphereGeometry(0.12),
+            new THREE.MeshBasicMaterial({ color: Math.random() * 0xffffff })
+        );
         scene.add(p);
-        const vx=(Math.random()-0.5)*0.8, vy=(Math.random()-0.5)*0.8, vz=(Math.random()-0.5)*0.8;
-        let t = 0;
-        const up = () => {
-            p.position.x += vx; p.position.y += vy; p.position.z += vz;
-            if(t++ < 50) requestAnimationFrame(up); else scene.remove(p);
+
+        const v = {
+            x: (Math.random() - 0.5) * 0.6,
+            y: (Math.random() - 0.5) * 0.6,
+            z: (Math.random() - 0.5) * 0.6
         };
-        up();
+
+        let t = 0;
+        (function anim() {
+            p.position.x += v.x;
+            p.position.y += v.y;
+            p.position.z += v.z;
+            if (t++ < 60) requestAnimationFrame(anim);
+            else scene.remove(p);
+        })();
     }
 }
 
 function startFallingParticles() {
-    const chars = ["🌸", "💗", "🌷", "✨"];
+    const chars = ["🌸", "🌺", "💮", "✨", "💗"];
     setInterval(() => {
         const p = document.createElement("div");
         p.className = "particle";
         p.innerHTML = chars[Math.floor(Math.random() * chars.length)];
-        p.style.left = Math.random() * 95 + "vw"; // Sebar di seluruh lebar layar
-        p.style.fontSize = Math.random() * 20 + 15 + "px";
+        p.style.left = Math.random() * 100 + "vw";
+        p.style.fontSize = Math.random() * 22 + 16 + "px";
         p.style.animationDuration = Math.random() * 3 + 4 + "s";
+        p.style.opacity = Math.random() * 0.6 + 0.4;
         document.body.appendChild(p);
-        setTimeout(() => p.remove(), 7000);
-    }, 400);
+        setTimeout(() => p.remove(), 8000);
+    }, 250);
 }
 
 function animate() {
     requestAnimationFrame(animate);
-    if(menuGroup) {
-        menuGroup.rotation.y = rotY;
-        menuGroup.rotation.x = rotX;
-    }
+    menuGroup.rotation.y = rotY;
+    menuGroup.rotation.x = rotX;
     renderer.render(scene, camera);
 }
 
 closeModal.onclick = () => modal.classList.add("hidden");
+
 window.addEventListener("resize", () => {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
