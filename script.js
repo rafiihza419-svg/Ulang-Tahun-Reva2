@@ -26,26 +26,32 @@ canvas.width = 128;
 canvas.height = 128;
 const ctx = canvas.getContext("2d");
 
-ctx.font = "72px Arial";
+ctx.font = "42px Arial";
 ctx.textAlign = "center";
 ctx.textBaseline = "middle";
 ctx.fillStyle = "#fff";
-ctx.fillText(m.icon, 64, 80);
+ctx.fillText(m.icon, 64, 70);
 
 const texture = new THREE.CanvasTexture(canvas);
 const logoMat = new THREE.MeshBasicMaterial({
     map: texture,
     transparent: true
+     opacity: 0.9
 });
 
 const logo = new THREE.Mesh(
-    new THREE.PlaneGeometry(1, 1),
+    new THREE.PlaneGeometry(0.6, 0.6), // ⬅️ lebih kecil
     logoMat
 );
 
-// posisikan di DEPAN bola
-logo.position.set(0, 0, 1.95);
+// tempel tipis di permukaan bola
+logo.position.set(0, 0, 1.92);
+
+// sedikit miring biar natural
+logo.rotation.x = -0.05;
+
 ball.add(logo);
+
 
     // background
     ctx.fillStyle = bgColor;
