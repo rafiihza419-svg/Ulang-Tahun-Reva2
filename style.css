@@ -1,51 +1,46 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
-    margin: 0;
     overflow: hidden;
-    background: radial-gradient(
-        circle at top,
-        #ffd1e8 0%,
-        #ff9acb 40%,
-        #ff6fae 100%
-    );
     font-family: 'Segoe UI', sans-serif;
+    background: radial-gradient(circle at top, #ffd1e8, #ff9acb, #ff6fae);
 }
 
+/* OPENING */
 #opening {
     position: fixed;
     inset: 0;
-    background: radial-gradient(
-        circle at center,
-        #ffe0f0,
-        #ff9acb
-    );
+    z-index: 9999;
+    background: radial-gradient(circle, #ffe0f0, #ff9acb);
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    z-index: 1000;
     transition: 0.8s;
+    pointer-events: auto;
 }
 
 #heart {
     font-size: 100px;
     cursor: pointer;
-    animation: pulse 1.2s infinite ease-in-out;
+    animation: pulse 1.2s infinite;
+    pointer-events: auto;
 }
 
 @keyframes pulse {
-    0%, 100% { transform: scale(1); }
+    0%,100% { transform: scale(1); }
     50% { transform: scale(1.2); }
 }
 
-#three-container { 
-    position: fixed; 
-    inset: 0; 
-    z-index: 10; 
+/* THREE */
+#three-container {
+    position: fixed;
+    inset: 0;
+    z-index: 10;
+    pointer-events: none; /* KUNCI */
 }
 
-/* Partikel Bunga & Hati */
+/* PARTICLE */
 .particle {
     position: fixed;
     top: -10%;
@@ -58,7 +53,7 @@ body {
     to { transform: translateY(110vh) rotate(360deg); opacity: 0; }
 }
 
-/* Modal Pesan */
+/* MODAL */
 #modal {
     position: fixed;
     inset: 0;
@@ -70,53 +65,11 @@ body {
     backdrop-filter: blur(10px);
 }
 
+.hidden { display: none !important; }
+
 .glass-card {
-    background: linear-gradient(
-        135deg,
-        rgba(255, 154, 0, 0.85),
-        rgba(255, 105, 180, 0.85)
-    );
+    background: linear-gradient(135deg, rgba(255,154,0,.85), rgba(255,105,180,.85));
     padding: 25px;
     border-radius: 22px;
     width: 90%;
     max-width: 400px;
-    text-align: center;
-    position: relative;
-    color: white;
-    box-shadow: 0 15px 40px rgba(0,0,0,0.25);
-    backdrop-filter: blur(12px);
-}
-
-.glass-card h3 {
-    text-shadow: 0 2px 6px rgba(0,0,0,0.3);
-}
-
-.hidden { display: none !important; }
-
-#close-modal {
-    position: absolute;
-    top: 5px; right: 10px;
-    background: none; border: none; font-size: 30px; cursor: pointer; color: #ff4d6d;
-}
-
-/* Kolase Foto 3x2 */
-.photo-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-    margin-top: 15px;
-}
-.photo-item {
-    background: #ffc0cb;
-    aspect-ratio: 1;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 10px;
-    color: white;
-}
-
-.particle {
-    filter: drop-shadow(0 0 6px rgba(255,105,180,0.6));
-}
