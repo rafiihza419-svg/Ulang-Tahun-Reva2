@@ -94,12 +94,12 @@ function initThree() {
     mouse = new THREE.Vector2();
 
     const menus = [
-        { name: "Hadiah", icon: "🎁", color: "#ff6b6b", val: "Kejutan spesial menantimu! 💖" },
-        { name: "Surat", icon: "✉️", color: "#4ecdc4", val: "Terima kasih sudah selalu ada." },
-        { name: "Video", icon: "🎬", color: "#ffd93d", val: "Momen kita adalah film terbaik." },
-        { name: "Foto", icon: "📸", color: "#ff8066", type: "photo" },
-        { name: "Rahasia", icon: "🤫", color: "#6c5ce7", val: "Jadi mau official kapan?" },
-        { name: "Kejutan", icon: "✨", color: "#feca57", type: "surprise" }
+        { name: "Hadiah", icon: "1", color: "#ff6b6b", val: "Kejutan spesial menantimu! 💖" },
+        { name: "Surat", icon: "2", color: "##ff6b6b", val: "Terima kasih sudah selalu ada." },
+        { name: "Video", icon: "3", color: "##ff6b6b", val: "Momen kita adalah film terbaik." },
+        { name: "Foto", icon: "4", color: "##ff6b6b", type: "photo" },
+        { name: "Rahasia", icon: "5", color: "##ff6b6b", val: "Jadi mau official kapan?" },
+        { name: "Kejutan", icon: "6", color: "##ff6b6b", type: "surprise" }
     ];
 
     const radius = 7.5;
