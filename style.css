@@ -1,33 +1,51 @@
-* { margin: 0; padding: 0; box-sizing: border-box; }
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
 body {
     overflow: hidden;
     font-family: 'Segoe UI', sans-serif;
-    background: radial-gradient(circle at top, #ffd1e8, #ff9acb, #ff6fae);
+    background: radial-gradient(
+        circle at top,
+        #ffd1e8 0%,
+        #ff9acb 40%,
+        #ff6fae 100%
+    );
 }
 
 /* OPENING */
 #opening {
     position: fixed;
     inset: 0;
-    z-index: 9999;
     background: radial-gradient(circle, #ffe0f0, #ff9acb);
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    transition: 0.8s;
-    pointer-events: auto;
+    z-index: 1000;
 }
 
 #heart {
-    position: relative;
-    z-index: 100000;
+    font-size: 100px;
+    cursor: pointer;
+    animation: heartbeat 1.2s infinite;
 }
 
-@keyframes pulse {
-    0%,100% { transform: scale(1); }
-    50% { transform: scale(1.2); }
+@keyframes heartbeat {
+    0%   { transform: scale(1); }
+    20%  { transform: scale(1.2); }
+    40%  { transform: scale(1); }
+    60%  { transform: scale(1.15); }
+    100% { transform: scale(1); }
+}
+
+#opening p {
+    margin-top: 15px;
+    font-weight: bold;
+    color: #ff4d88;
+    pointer-events: none;
 }
 
 /* THREE */
@@ -35,10 +53,9 @@ body {
     position: fixed;
     inset: 0;
     z-index: 10;
-    pointer-events: none; /* KUNCI */
 }
 
-/* PARTICLE */
+/* FALLING FLOWER */
 .particle {
     position: fixed;
     top: -10%;
@@ -48,31 +65,8 @@ body {
 }
 
 @keyframes fall {
-    to { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+    to {
+        transform: translateY(110vh) rotate(360deg);
+        opacity: 0;
+    }
 }
-
-/* MODAL */
-#modal {
-    position: fixed;
-    inset: 0;
-    z-index: 2000;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: rgba(0,0,0,0.3);
-    backdrop-filter: blur(10px);
-}
-
-.hidden { display: none !important; }
-
-.glass-card {
-    background: linear-gradient(135deg, rgba(255,154,0,.85), rgba(255,105,180,.85));
-    padding: 25px;
-    border-radius: 22px;
-    width: 90%;
-    max-width: 400px;
-
-    #opening p {
-    pointer-events: none; /* ⬅️ INI BIANG KEROKNYA */
-}
-
