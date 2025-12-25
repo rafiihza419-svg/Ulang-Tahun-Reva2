@@ -53,10 +53,12 @@ function initThree() {
     renderer.setPixelRatio(window.devicePixelRatio);
     container.appendChild(renderer.domElement);
 
-    scene.add(new THREE.AmbientLight(0xffffff, 1.2));
-    const light = new THREE.PointLight(0xffffff, 1);
-    light.position.set(10, 10, 10);
-    scene.add(light);
+    scene.add(new THREE.AmbientLight(0xffc0dd, 1.4));
+
+    const pinkLight = new THREE.PointLight(0xff9acb, 1.2);
+    pinkLight.position.set(0, 10, 10);
+    scene.add(pinkLight);
+
 
     menuGroup = new THREE.Group();
     scene.add(menuGroup);
