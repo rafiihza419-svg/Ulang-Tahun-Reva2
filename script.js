@@ -18,13 +18,14 @@ heart.onclick = () => {
 function initThree() {
     scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.z = 20;
+    camera.position.z = 18;
 
     renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(window.devicePixelRatio);
     container.appendChild(renderer.domElement);
 
-    scene.add(new THREE.AmbientLight(0xffffff, 0.8));
+    scene.add(new THREE.AmbientLight(0xffffff, 0.9));
     const pl = new THREE.PointLight(0xffffff, 1);
     pl.position.set(10, 10, 10);
     scene.add(pl);
@@ -35,140 +36,108 @@ function initThree() {
     raycaster = new THREE.Raycaster();
     mouse = new THREE.Vector2();
 
-    // DATA MENU
     const menus = [
-        { name: "Hadiah", type: "gift", color: 0xff4d6d, icon: "🎁" },
-        { name: "Surat", type: "letter", color: 0xff85a1, icon: "✉️" },
-        { name: "Video", type: "video", color: 0xffb3c1, icon: "🎬" },
-        { name: "Foto", type: "photo", color: 0xffccd5, icon: "📸" },
-        { name: "Rahasia", type: "secret", color: 0xffa500, icon: "🤫" },
-        { name: "Kejutan", type: "surprise", color: 0xff6b6b, icon: "✨" }
+        { name: "Hadiah", icon: "🎁", color: 0xff6b6b, type: "text", val: "Ini hadiah spesial buat kamu! 💝" },
+        { name: "Surat", icon: "✉️", color: 0x4ecdc4, type: "text", val: "Kamu adalah hal terbaik yang pernah terjadi padaku." },
+        { name: "Video", icon: "🎬", color: 0xffd93d, type: "text", val: "Bayangkan video kenangan kita diputar di sini..." },
+        { name: "Foto", icon: "📸", color: 0xff8066, type: "photo" },
+        { name: "Rahasia", icon: "🤫", color: 0x6c5ce7, type: "secret", val: "Jadi mau official kapan?" },
+        { name: "Kejutan", icon: "✨", color: 0xfeca57, type: "surprise" }
     ];
 
-    // Buat Bola Menu
+    // Buat Bola & Logo
     menus.forEach((m, i) => {
-        const geo = new THREE.SphereGeometry(1.8, 32, 32);
-        const mat = new THREE.MeshStandardMaterial({ color: m.color, roughness: 0.3 });
-        const mesh = new THREE.Mesh(geo, mat);
+        const phi = Math.acos(-1 + (2 * i) / menus.length);
+        const theta = Math.sqrt(menus.length * Math.PI) * phi;
+        const radius = 7;
 
-        const angle = (i / menus.length) * Math.PI * 2;
-        mesh.position.set(Math.cos(angle) * 8, Math.sin(angle) * 8, 0);
-        mesh.userData = m;
-        menuGroup.add(mesh);
+        // Bola
+        const ball = new THREE.Mesh(
+            new THREE.SphereGeometry(1.6, 32, 32),
+            new THREE.MeshStandardMaterial({ color: m.color, roughness: 0.3 })
+        );
+        ball.position.set(radius * Math.cos(theta) * Math.sin(phi), radius * Math.sin(theta) * Math.sin(phi), radius * Math.cos(phi));
+        ball.userData = m;
+        menuGroup.add(ball);
 
-        // Tambah Label Icon di atas bola
+        // Logo (Emoji)
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
-        canvas.width = 64; canvas.height = 64;
-        ctx.font = "40px Arial"; ctx.textAlign = "center";
-        ctx.fillText(m.icon, 32, 45);
-        const tex = new THREE.CanvasTexture(canvas);
-        const spriteMat = new THREE.SpriteMaterial({ map: tex });
-        const sprite = new THREE.Sprite(spriteMat);
-        sprite.position.copy(mesh.position);
-        sprite.scale.set(3, 3, 1);
+        canvas.width = 128; canvas.height = 128;
+        ctx.font = "80px Arial"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+        ctx.fillText(m.icon, 64, 64);
+        const sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(canvas) }));
+        sprite.position.copy(ball.position);
+        sprite.scale.set(3.5, 3.5, 1);
         menuGroup.add(sprite);
     });
 
-    // PARTIKEL AMBIENT (Hati & Bunga yang ikut berputar)
-    const pCount = 150;
+    // Partikel (Hati & Bunga) Keliling Layar
     const pIcons = ["🌸", "💗", "🌷", "✨"];
-    for (let i = 0; i < pCount; i++) {
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-        canvas.width = 64; canvas.height = 64;
-        ctx.font = "30px Arial";
-        ctx.fillText(pIcons[Math.floor(Math.random() * pIcons.length)], 16, 40);
-        
-        const tex = new THREE.CanvasTexture(canvas);
-        const mat = new THREE.SpriteMaterial({ map: tex, transparent: true, opacity: 0.7 });
-        const p = new THREE.Sprite(mat);
-        
-        // Sebar partikel di area luas
-        p.position.set(
-            (Math.random() - 0.5) * 50,
-            (Math.random() - 0.5) * 50,
-            (Math.random() - 0.5) * 50
-        );
-        p.scale.set(1.5, 1.5, 1);
+    for (let i = 0; i < 150; i++) {
+        const c = document.createElement('canvas');
+        const cx = c.getContext('2d');
+        c.width = 64; c.height = 64;
+        cx.font = "30px Arial"; cx.fillText(pIcons[Math.floor(Math.random()*4)], 10, 40);
+        const p = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(c), transparent: true, opacity: 0.6 }));
+        p.position.set((Math.random()-0.5)*50, (Math.random()-0.5)*50, (Math.random()-0.5)*50);
         menuGroup.add(p);
     }
 
-    // EVENT MOUSE
+    // Event Handlers
     window.addEventListener("mousedown", e => { dragging = true; lx = e.clientX; ly = e.clientY; });
-    window.addEventListener("mouseup", () => dragging = false);
-    window.addEventListener("mousemove", rotateAction);
-    window.addEventListener("click", clickAction);
-}
-
-function rotateAction(e) {
-    if (!dragging) return;
-    rotY += (e.clientX - lx) * 0.007;
-    rotX += (e.clientY - ly) * 0.007;
-    lx = e.clientX; ly = e.clientY;
-}
-
-function clickAction(e) {
-    mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
-    mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
-    raycaster.setFromCamera(mouse, camera);
-    const interacts = raycaster.intersectObjects(menuGroup.children);
-    
-    if (interacts.length > 0 && interacts[0].object.userData.name) {
-        openMenu(interacts[0].object.userData);
-    }
+    window.addEventListener("mouseup", e => {
+        dragging = false;
+        // Deteksi Klik
+        mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+        mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+        raycaster.setFromCamera(mouse, camera);
+        const intersects = raycaster.intersectObjects(menuGroup.children);
+        const clickedBall = intersects.find(o => o.object.userData.name);
+        if (clickedBall) openMenu(clickedBall.object.userData);
+    });
+    window.addEventListener("mousemove", e => {
+        if (!dragging) return;
+        rotY += (e.clientX - lx) * 0.007;
+        rotX += (e.clientY - ly) * 0.007;
+        lx = e.clientX; ly = e.clientY;
+    });
 }
 
 function openMenu(data) {
-    modalContent.innerHTML = `<h3>${data.name}</h3>`;
+    let html = `<h3>${data.name} ${data.icon}</h3><div style="margin-top:15px">`;
+    if (data.type === "secret") html += `<p style="font-weight:bold; font-size:20px">"${data.val}"</p>`;
+    else if (data.type === "photo") {
+        html += `<div class="photo-grid">`;
+        for(let i=1; i<=6; i++) html += `<div class="photo-item">FOTO ${i}</div>`;
+        html += `</div>`;
+    } else if (data.type === "surprise") {
+        html += `<p>BOOM! 🎆</p>`;
+        createFireworks();
+    } else html += `<p>${data.val || ""}</p>`;
     
-    if (data.type === 'photo') {
-        let grid = `<div class="photo-grid">`;
-        for(let i=1; i<=6; i++) grid += `<div class="photo-item">FOTO ${i}</div>`;
-        grid += `</div>`;
-        modalContent.innerHTML += grid;
-    } else if (data.type === 'secret') {
-        modalContent.innerHTML += `<p style="margin-top:20px; font-weight:bold;">"Jadi mau official kapan?"</p>`;
-    } else if (data.type === 'surprise') {
-        createFirework();
-        modalContent.innerHTML += `<p>BOOM! 🎉 Selamat!</p>`;
-    } else if (data.type === 'letter') {
-        modalContent.innerHTML += `<p style="margin-top:10px">Hanya sebuah surat cinta digital untukmu...</p>`;
-    } else {
-        modalContent.innerHTML += `<p style="margin-top:10px">Isi menu ${data.name} sedang disiapkan...</p>`;
-    }
-    
+    html += `</div>`;
+    modalContent.innerHTML = html;
     modal.classList.remove("hidden");
 }
 
-// EFEK KEMBANG API SEDERHANA
-function createFirework() {
-    const fCount = 50;
-    const colors = [0xff0000, 0xffff00, 0xff00ff, 0x00ffff];
-    for(let i=0; i<fCount; i++) {
-        const g = new THREE.SphereGeometry(0.1);
-        const m = new THREE.MeshBasicMaterial({ color: colors[Math.floor(Math.random()*colors.length)] });
-        const p = new THREE.Mesh(g, m);
+function createFireworks() {
+    for(let i=0; i<40; i++) {
+        const p = new THREE.Mesh(new THREE.SphereGeometry(0.1), new THREE.MeshBasicMaterial({ color: Math.random() * 0xffffff }));
         scene.add(p);
-        
-        const vx = (Math.random()-0.5)*1;
-        const vy = (Math.random()-0.5)*1;
-        const vz = (Math.random()-0.5)*1;
-        
-        let timer = 0;
-        const anim = () => {
+        const vx = (Math.random()-0.5)*0.8, vy = (Math.random()-0.5)*0.8, vz = (Math.random()-0.5)*0.8;
+        let life = 0;
+        const up = () => {
             p.position.x += vx; p.position.y += vy; p.position.z += vz;
-            timer++;
-            if(timer < 60) requestAnimationFrame(anim);
-            else scene.remove(p);
+            if(life++ < 50) requestAnimationFrame(up); else scene.remove(p);
         };
-        anim();
+        up();
     }
 }
 
 function animate() {
     requestAnimationFrame(animate);
-    if (menuGroup) {
+    if(menuGroup) {
         menuGroup.rotation.y = rotY;
         menuGroup.rotation.x = rotX;
     }
@@ -176,3 +145,8 @@ function animate() {
 }
 
 closeModal.onclick = () => modal.classList.add("hidden");
+window.addEventListener("resize", () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+});
