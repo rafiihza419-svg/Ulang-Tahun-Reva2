@@ -1,18 +1,14 @@
 const opening = document.getElementById("opening");
 const heart = document.getElementById("heart");
 const container = document.getElementById("three-container");
-const content = document.getElementById("content");
-const backBtn = document.getElementById("back");
 
 let scene, camera, renderer, menuGroup;
 let rotX = 0, rotY = 0;
 let dragging = false;
 let lx = 0, ly = 0;
 
-// Mulai Program
 heart.onclick = () => {
-    opening.style.opacity = "0";
-    setTimeout(() => opening.style.display = "none", 1000);
+    opening.style.display = "none";
     initThree();
     animate();
     startParticles();
@@ -20,41 +16,43 @@ heart.onclick = () => {
 
 function initThree() {
     scene = new THREE.Scene();
-    camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 100);
-    camera.position.z = 10;
+    camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.z = 12;
 
     renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(window.devicePixelRatio);
     container.appendChild(renderer.domElement);
 
-    // Grup untuk menampung ikon agar bisa diputar segala arah
     menuGroup = new THREE.Group();
     scene.add(menuGroup);
 
+    // Gunakan Emoji agar tidak perlu upload file gambar & tidak ada kotak putih
     const menuData = [
-        { icon: "✉️", title: "Surat", text: "Terima kasih sudah ada di sini!" },
-        { icon: "🎁", title: "Hadiah", text: "Hadiah terbaik adalah waktumu." },
-        { icon: "📸", title: "Foto", text: "Menyimpan kenangan dalam pixels." },
-        { icon: "🎵", title: "Musik", text: "Lagu ini spesial untukmu." },
-        { icon: "🎬", title: "Video", text: "Mari buat momen bersama!" },
-        { icon: "💖", title: "Cinta", text: "You are amazing!" }
+        { icon: "✉️", title: "Surat", text: "Semoga harimu selalu indah!" },
+        { icon: "🎁", title: "Hadiah", text: "Ini kejutan kecil untukmu!" },
+        { icon: "📸", title: "Foto", text: "Banyak kenangan manis kita." },
+        { icon: "🎵", title: "Musik", text: "Dengarkan melodi hati ini." },
+        { icon: "🎬", title: "Video", text: "Momen yang tak terlupakan." },
+        { icon: "💖", title: "Love", text: "Kamu yang terbaik!" }
     ];
 
-    const radius = 4;
+    const radius = 5;
     menuData.forEach((data, i) => {
+        // Buat Texture dari Emoji (Solusi terbaik agar tidak ada background putih)
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
         canvas.width = 128; canvas.height = 128;
-        ctx.font = "90px serif";
+        ctx.font = "90px Arial";
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
         ctx.fillText(data.icon, 64, 64);
 
         const texture = new THREE.CanvasTexture(canvas);
-        const mat = new THREE.SpriteMaterial({ map: texture });
+        const mat = new THREE.SpriteMaterial({ map: texture, transparent: true });
         const sp = new THREE.Sprite(mat);
 
-        // Posisi Bola (Spherical)
+        // Rumus posisi bola
         const phi = Math.acos(-1 + (2 * i) / menuData.length);
         const theta = Math.sqrt(menuData.length * Math.PI) * phi;
 
@@ -64,54 +62,21 @@ function initThree() {
             radius * Math.cos(phi)
         );
 
-        sp.scale.set(1.8, 1.8, 1.8);
-        sp.userData = data; // Simpan info pesan
+        sp.scale.set(2, 2, 2);
+        sp.userData = data; 
         menuGroup.add(sp);
     });
 
-    // Event Listener Mouse
+    // Event Mouse & Touch
     window.addEventListener("mousedown", e => { dragging = true; lx = e.clientX; ly = e.clientY; });
     window.addEventListener("mouseup", () => dragging = false);
-    window.addEventListener("mousemove", (e) => {
+    window.addEventListener("mousemove", e => {
         if (dragging) {
-            rotY += (e.clientX - lx) * 0.007;
-            rotX += (e.clientY - ly) * 0.007;
+            rotY += (e.clientX - lx) * 0.01;
+            rotX += (e.clientY - ly) * 0.01;
             lx = e.clientX; ly = e.clientY;
         }
     });
-
-    // Touch Support (HP)
-    window.addEventListener("touchstart", e => { 
-        dragging = true; lx = e.touches[0].clientX; ly = e.touches[0].clientY; 
-    });
-    window.addEventListener("touchend", () => dragging = false);
-    window.addEventListener("touchmove", e => {
-        if (dragging) {
-            rotY += (e.touches[0].clientX - lx) * 0.007;
-            rotX += (e.touches[0].clientY - ly) * 0.007;
-            lx = e.touches[0].clientX; ly = e.touches[0].clientY;
-        }
-    });
-
-    // Klik Ikon (Raycaster)
-    window.addEventListener("click", onDocumentMouseDown);
-}
-
-function onDocumentMouseDown(event) {
-    const raycaster = new THREE.Raycaster();
-    const mouse = new THREE.Vector2();
-    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-
-    raycaster.setFromCamera(mouse, camera);
-    const intersects = raycaster.intersectObjects(menuGroup.children);
-
-    if (intersects.length > 0) {
-        const data = intersects[0].object.userData;
-        document.getElementById("msg-title").innerText = data.title;
-        document.getElementById("msg-text").innerText = data.text;
-        content.classList.remove("hidden");
-    }
 }
 
 function animate() {
@@ -119,7 +84,7 @@ function animate() {
     if (menuGroup) {
         menuGroup.rotation.y = rotY;
         menuGroup.rotation.x = rotX;
-        if (!dragging) { rotY += 0.003; } // Auto rotate
+        if (!dragging) { rotY += 0.005; } // Putar otomatis pelan
     }
     renderer.render(scene, camera);
 }
@@ -128,19 +93,18 @@ function startParticles() {
     setInterval(() => {
         const f = document.createElement("div");
         f.className = "falling-flower";
-        f.innerHTML = ["🌸", "🌷", "✨", "💗"][Math.floor(Math.random() * 4)];
+        f.innerHTML = ["🌸", "✨", "🌷", "💗"][Math.floor(Math.random() * 4)];
         f.style.left = Math.random() * 100 + "vw";
-        f.style.fontSize = Math.random() * 20 + 15 + "px";
         f.style.top = "-5vh";
+        f.style.fontSize = (Math.random() * 20 + 10) + "px";
         f.style.animation = `fall ${5 + Math.random() * 5}s linear forwards`;
         document.body.appendChild(f);
         setTimeout(() => f.remove(), 10000);
     }, 400);
 }
 
-backBtn.onclick = () => content.classList.add("hidden");
-
-window.addEventListener("resize", () => {
+// Tambahkan resize agar tidak berantakan di layar beda ukuran
+window.addEventListener('resize', () => {
     if(camera) {
         camera.aspect = window.innerWidth / window.innerHeight;
         camera.updateProjectionMatrix();
