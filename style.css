@@ -21,10 +21,8 @@ body {
 }
 
 #heart {
-    font-size: 100px;
-    cursor: pointer;
-    animation: pulse 1.2s infinite;
-    pointer-events: auto;
+    position: relative;
+    z-index: 100000;
 }
 
 @keyframes pulse {
@@ -73,3 +71,8 @@ body {
     border-radius: 22px;
     width: 90%;
     max-width: 400px;
+
+    #opening p {
+    pointer-events: none; /* ⬅️ INI BIANG KEROKNYA */
+}
+
