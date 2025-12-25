@@ -1,16 +1,11 @@
-const opening = document.getElementById("opening");
 const heart = document.getElementById("heart");
-const container = document.getElementById("three-container");
+const opening = document.getElementById("opening");
+const menu = document.getElementById("menu");
 
-heart.addEventListener("click", () => {
-    console.log("❤️ HEART CLICKED"); // DEBUG (boleh dihapus nanti)
-
-    opening.style.opacity = "0";
-
-    setTimeout(() => {
-        opening.style.display = "none";
-        initThree();
-        animate();
-        startFallingParticles();
-    }, 800);
-});
+heart.onclick = () => {
+  opening.style.opacity = 0;
+  setTimeout(() => {
+    opening.style.display = "none";
+    menu.classList.remove("hidden");
+  }, 600);
+};
