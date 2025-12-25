@@ -1,21 +1,16 @@
-* {
+ {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-body::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    background: radial-gradient(
-        circle at top,
-        #ffd1e8 0%,
-        #ff9acb 40%,
-        #ff6fae 100%
-    );
-    z-index: 0;
+body {
+    margin: 0;
+    overflow: hidden;
+    font-family: 'Segoe UI', sans-serif;
+    background: #ffd1e8;
 }
+
 
 /* OPENING */
 #opening {
@@ -57,8 +52,12 @@ body::before {
 /* THREE */
 #three-container {
     position: fixed;
-    inset: 0;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
     z-index: 5;
+    pointer-events: auto;
 }
 
 /* FALLING FLOWER */
@@ -75,4 +74,8 @@ body::before {
         transform: translateY(110vh) rotate(360deg);
         opacity: 0;
     }
+}
+
+canvas {
+    display: block;
 }
